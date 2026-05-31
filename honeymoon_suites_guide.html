@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honeymoon Suites — October 19–26</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf6f0;
+    --sand: #e8ddd0;
+    --blush: #c9a98a;
+    --deep: #2c1f14;
+    --ocean: #3a6b7a;
+    --ocean-light: #5b9aaa;
+    --gold: #b8965a;
+    --text: #3d2e22;
+    --muted: #7a6a5a;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 30px rgba(44,31,20,0.10);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #2c1f14 0%, #3a6b7a 60%, #5b9aaa 100%);
+    padding: 64px 32px 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--blush);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(38px, 6vw, 68px);
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .hero h1 em { font-style: italic; color: var(--blush); }
+  .hero-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+    margin-bottom: 36px;
+  }
+  .hero-meta {
+    display: inline-flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero-pill {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    color: #fff;
+    font-weight: 300;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 36px 24px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+    max-width: 380px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  #searchInput {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    border: 1.5px solid var(--sand);
+    border-radius: 100px;
+    background: #fff;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #searchInput:focus { border-color: var(--ocean-light); }
+  #searchInput::placeholder { color: var(--muted); }
+
+  .filter-wrap {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 8px 18px;
+    border-radius: 100px;
+    border: 1.5px solid var(--sand);
+    background: #fff;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--ocean); color: var(--ocean); }
+  .filter-btn.active { background: var(--ocean); border-color: var(--ocean); color: #fff; }
+
+  .sort-wrap select {
+    padding: 8px 32px 8px 14px;
+    border: 1.5px solid var(--sand);
+    border-radius: 100px;
+    background: #fff;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6a5a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    outline: none;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    max-width: 1100px;
+    margin: 16px auto 0;
+    padding: 0 24px;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  #resultCount { color: var(--ocean); font-weight: 500; }
+
+  /* GRID */
+  .grid {
+    max-width: 1100px;
+    margin: 24px auto 60px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: fadeUp 0.4s ease both;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(44,31,20,0.15);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-badge {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: rgba(44,31,20,0.75);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+  }
+  .card-badge.top-pick { background: var(--gold); }
+  .card-badge.best-value { background: var(--ocean); }
+
+  .card-img-wrap {
+    position: relative;
+    height: 210px;
+    overflow: hidden;
+    background: var(--sand);
+    flex-shrink: 0;
+  }
+  .card-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  .card:hover .card-img-wrap img { transform: scale(1.05); }
+
+  .card-body {
+    padding: 22px 22px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-location {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ocean);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--deep);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .card-suite {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--cream);
+    color: var(--muted);
+    border: 1px solid var(--sand);
+  }
+  .tag.highlight { background: #eef7fa; color: var(--ocean); border-color: #c0dde5; }
+
+  .card-suggestion {
+    background: linear-gradient(135deg, #f0f6ff, #eaf2fb);
+    border-left: 3px solid #5b8fc9;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .card-suggestion strong { color: #3a6aab; font-weight: 600; display: block; margin-bottom: 4px; font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; }
+  .claude-badge { display: inline-block; background: #3a6aab; color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 0.8px; padding: 1px 7px; border-radius: 100px; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    border-top: 1px solid var(--sand);
+    flex-shrink: 0;
+  }
+  .price {
+    display: flex;
+    flex-direction: column;
+  }
+  .price-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .price-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--deep);
+    line-height: 1.1;
+  }
+  .price-note { font-size: 10px; color: var(--muted); }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--deep);
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    padding: 10px 18px;
+    border-radius: 100px;
+    transition: background 0.2s;
+  }
+  .card-link:hover { background: var(--ocean); }
+
+  .table-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .table-filter-wrap, .table-sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .table-filter-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .table-filter-btn, .table-sort-btn {
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1.5px solid var(--sand);
+    background: #fff;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .table-filter-btn:hover, .table-sort-btn:hover { border-color: var(--ocean); color: var(--ocean); }
+  .table-filter-btn.active, .table-sort-btn.active { background: var(--ocean); border-color: var(--ocean); color: #fff; }
+  .table-count {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .table-count span { color: var(--ocean); font-weight: 500; }
+  .compare-section {
+    max-width: 1100px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 300;
+    color: var(--deep);
+    margin-bottom: 6px;
+  }
+  .section-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 22px;
+    font-weight: 300;
+  }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 13.5px;
+  }
+  .compare-table th {
+    background: var(--deep);
+    color: #fff;
+    font-weight: 400;
+    font-family: 'Jost', sans-serif;
+    letter-spacing: 0.5px;
+    padding: 14px 16px;
+    text-align: left;
+  }
+  .compare-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--sand);
+    vertical-align: middle;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: #faf8f5; }
+  .compare-table .resort-name { font-weight: 500; color: var(--deep); }
+  .compare-table .price-cell { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--ocean); }
+  .honeymoon-score { display: flex; gap: 2px; }
+  .heart { color: var(--blush); font-size: 14px; }
+  .heart.empty { color: var(--sand); }
+
+  /* TIPS */
+  .tips-section {
+    max-width: 1100px;
+    margin: 0 auto 70px;
+    padding: 0 24px;
+  }
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 22px;
+  }
+  .tip-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--gold);
+  }
+  .tip-icon { font-size: 26px; margin-bottom: 10px; }
+  .tip-title { font-weight: 500; font-size: 14px; color: var(--deep); margin-bottom: 6px; }
+  .tip-body { font-size: 13px; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* NO RESULTS */
+  .no-results {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--muted);
+    font-size: 15px;
+    display: none;
+    grid-column: 1/-1;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--deep);
+    text-align: center;
+    padding: 28px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    font-weight: 300;
+  }
+
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .filter-wrap { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">✦ Honeymoon Collection ✦</div>
+  <h1>Your Perfect<br><em>Escape Awaits</em></h1>
+  <p class="hero-sub">9 Curated Suites · October 19–26, 2025 · 7 Nights · <span style="color:var(--blush)">✨ 3 added by Claude</span></p>
+  <div class="hero-meta">
+    <span class="hero-pill">🇯🇲 Jamaica</span>
+    <span class="hero-pill">🇦🇼 Aruba</span>
+    <span class="hero-pill">🇨🇷 Costa Rica</span>
+    <span class="hero-pill">$2,342 – $11,752</span>
+  </div>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="Search resort, location, suite type…">
+  </div>
+  <div class="filter-wrap">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="jamaica">Jamaica</button>
+    <button class="filter-btn" data-filter="aruba">Aruba</button>
+    <button class="filter-btn" data-filter="costa rica">Costa Rica</button>
+  </div>
+  <div class="sort-wrap">
+    <select id="sortSelect">
+      <option value="default">Sort: Featured</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="honeymoon">Honeymoon Score</option>
+    </select>
+  </div>
+</div>
+
+<div class="stats-bar">
+  Showing <span id="resultCount">9</span> of 9 resorts
+</div>
+
+<!-- GRID -->
+<div class="grid" id="resortGrid">
+
+  <!-- CARD 1: Sandals Ochi -->
+  <div class="card" data-location="jamaica" data-price="4056" data-score="5" data-keywords="sandals ochi resort jamaica riviera honeymoon luxury all-inclusive">
+    <div class="card-img-wrap">
+      <img src="https://www.sandals.com/blog/content/images/2024/04/SOCHI_POOL.jpg" alt="Sandals Ochi Resort" onerror="this.style.background='#c9a98a';this.style.display='block'">
+      <span class="card-badge top-pick">⭐ Top Pick</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Ocho Rios, Jamaica</div>
+      <h2 class="card-title">Sandals Ochi Resort</h2>
+      <p class="card-suite">Riviera Honeymoon Luxury Suite</p>
+      <div class="card-tags">
+        <span class="tag highlight">All-Inclusive</span>
+        <span class="tag">Ocean Views</span>
+        <span class="tag">Butler Service</span>
+        <span class="tag">Couples-Only</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        Book the "Love Nest" butler suite upgrade — Sandals' concierge team will arrange a private candlelit dinner on your terrace overlooking the Caribbean. Ask about their complimentary honeymoon amenity package at check-in.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$4,056</span>
+        <span class="price-note">per room · 7 nights</span>
+      </div>
+      <a href="https://www.sandals.com/ochi/" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 2: Iberostar Rose Hall -->
+  <div class="card" data-location="jamaica" data-price="3131" data-score="4" data-keywords="iberostar selection rose hall suites montego bay jamaica junior suite ocean room">
+    <div class="card-img-wrap">
+      <img src="https://www.iberostar.com/content/dam/iberostar/hotels/mex-dom-jam-cub/iberostar-selection-rose-hall-suites/hotel-gallery/iberostar-selection-rose-hall-suites-exterior.jpg" alt="Iberostar Rose Hall Suites" onerror="this.style.background='#5b9aaa';this.style.display='block'">
+      <span class="card-badge best-value">Best Value</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Montego Bay, Jamaica</div>
+      <h2 class="card-title">Iberostar Selection Rose Hall Suites</h2>
+      <p class="card-suite">Junior Suite Ocean Room</p>
+      <div class="card-tags">
+        <span class="tag highlight">Adults-Only Wing</span>
+        <span class="tag">Oceanfront</span>
+        <span class="tag">Gourmet Dining</span>
+        <span class="tag">Spa</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        Request a high-floor suite facing west for spectacular Montego Bay sunsets. The Star Prestige section offers a private pool lounge — worth the upgrade for an intimate honeymoon experience.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$3,131</span>
+        <span class="price-note">per room · 7 nights</span>
+      </div>
+      <a href="https://www.iberostar.com/en/hotels/montego-bay/iberostar-selection-rose-hall-suites" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 3: JOIA Aruba -->
+  <div class="card" data-location="aruba" data-price="11752" data-score="5" data-keywords="joia aruba iberostar norte noord master butler suite king luxury">
+    <div class="card-img-wrap">
+      <img src="https://www.iberostar.com/content/dam/iberostar/hotels/aruba/joia-aruba-by-iberostar/hotel-gallery/joia-aruba-by-iberostar-pool-exterior.jpg" alt="JOIA Aruba by Iberostar" onerror="this.style.background='#3a6b7a';this.style.display='block'">
+      <span class="card-badge" style="background:var(--blush)">Ultra-Luxury</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Noord, Aruba</div>
+      <h2 class="card-title">JOIA Aruba by Iberostar</h2>
+      <p class="card-suite">Master Butler Suite King</p>
+      <div class="card-tags">
+        <span class="tag highlight">Private Butler</span>
+        <span class="tag">Infinity Pool</span>
+        <span class="tag">Adults-Only</span>
+        <span class="tag">Eagle Beach</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        Eagle Beach — steps from the resort — is consistently rated one of the world's best beaches. Have your butler arrange a private cabana with champagne at sunset. October weather in Aruba is outside hurricane season: near-perfect skies and calm seas.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$11,752</span>
+        <span class="price-note">per room · 7 nights</span>
+      </div>
+      <a href="https://www.iberostar.com/en/hotels/eagle-beach/joia-aruba-by-iberostar" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 4: Secrets Baby Beach -->
+  <div class="card" data-location="aruba" data-price="9715" data-score="5" data-keywords="secrets baby beach aruba san nicolas preferred club junior suite swim out hyatt">
+    <div class="card-img-wrap">
+      <img src="https://www.hyattinclusivecollection.com/content/dam/secrets-resorts/aruba/baby-beach/gallery/secrets-aruba-baby-beach-exterior.jpg" alt="Secrets Baby Beach Aruba" onerror="this.style.background='#b8965a';this.style.display='block'">
+      <span class="card-badge" style="background:var(--ocean)">Swim-Out Suite</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">San Nicolas, Aruba</div>
+      <h2 class="card-title">Secrets Baby Beach Aruba</h2>
+      <p class="card-suite">Preferred Club Junior Suite Swim Out</p>
+      <div class="card-tags">
+        <span class="tag highlight">Swim-Out Pool</span>
+        <span class="tag">Preferred Club</span>
+        <span class="tag">Adults-Only</span>
+        <span class="tag">Newer Property</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        The swim-out suite lets you slip directly from your private terrace into the pool — one of the most romantic room features available. Preferred Club guests get dedicated lounge access, à la carte dining, and premium spirits stocked in-room.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$9,715</span>
+        <span class="price-note">per room · 7 nights</span>
+      </div>
+      <a href="https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/aruba/baby-beach-aruba" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 5: Riu Guanacaste -->
+  <div class="card" data-location="costa rica" data-price="2342" data-score="3" data-keywords="riu guanacaste costa rica guanacaste province deluxe room pool view budget value">
+    <div class="card-img-wrap">
+      <img src="https://www.riu.com/en/hotel/costa-rica/guanacaste/hotel-riu-guanacaste/galeries/hotel-riu-guanacaste-pool.jpg" alt="Riu Guanacaste" onerror="this.style.background='#3a6b7a';this.style.display='block'">
+      <span class="card-badge best-value">Most Affordable</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Guanacaste, Costa Rica</div>
+      <h2 class="card-title">Riu Guanacaste</h2>
+      <p class="card-suite">Deluxe Room Pool View</p>
+      <div class="card-tags">
+        <span class="tag highlight">All-Inclusive</span>
+        <span class="tag">Beachfront</span>
+        <span class="tag">Eco-Destination</span>
+        <span class="tag">Best Price</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        Costa Rica's Guanacaste is dry season in October — ideal conditions. Use the savings vs. other resorts to splurge on a private rainforest zip-line tour or horseback ride on the beach. Ask the concierge for in-room honeymoon decoration on arrival.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$2,342</span>
+        <span class="price-note">per room · 7 nights</span>
+      </div>
+      <a href="https://www.riu.com/en/hotel/costa-rica/guanacaste/hotel-riu-guanacaste" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 6: Secrets Papagayo -->
+  <div class="card" data-location="costa rica" data-price="6572" data-score="5" data-keywords="secrets papagayo costa rica papagayo preferred club bungalow suite ocean front hyatt">
+    <div class="card-img-wrap">
+      <img src="https://www.hyattinclusivecollection.com/content/dam/secrets-resorts/costa-rica/papagayo/gallery/secrets-papagayo-costa-rica-aerial.jpg" alt="Secrets Papagayo Costa Rica" onerror="this.style.background='#2c1f14';this.style.display='block'">
+      <span class="card-badge top-pick">⭐ Top Pick</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Papagayo, Costa Rica</div>
+      <h2 class="card-title">Secrets Papagayo Costa Rica</h2>
+      <p class="card-suite">Preferred Club Bungalow Suite, Ocean Front</p>
+      <div class="card-tags">
+        <span class="tag highlight">Oceanfront Bungalow</span>
+        <span class="tag">Adults-Only</span>
+        <span class="tag">Private Plunge Pool</span>
+        <span class="tag">Jungle Views</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        The bungalow-style suites feel removed from the main resort — perfect for seclusion. Papagayo Peninsula offers world-class snorkeling and sailing excursions. October is the tail of rainy season — lush green landscapes and usually clear mornings; book outdoor activities for AM.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$6,572</span>
+        <span class="price-note">per room · 7 nights</span>
+      </div>
+      <a href="https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/costa-rica/papagayo-costa-rica" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 7: Couples Negril — Claude suggestion -->
+  <div class="card" data-location="jamaica" data-price="3304" data-score="5" data-keywords="couples negril jamaica beachfront suite adults-only honeymoon package catamaran scuba spa">
+    <div class="card-img-wrap">
+      <img src="https://www.couples.com/sites/default/files/2022-08/couples-negril-beach.jpg" alt="Couples Negril" onerror="this.style.background='#5b9aaa';this.style.display='block'">
+      <span class="card-badge" style="background:var(--blush)">✨ Claude Pick</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Negril, Jamaica</div>
+      <h2 class="card-title">Couples Negril</h2>
+      <p class="card-suite">Beachfront Suite · Adults &amp; Couples Only</p>
+      <div class="card-tags">
+        <span class="tag highlight">Couples-Only</span>
+        <span class="tag">7-Mile Beach</span>
+        <span class="tag">Free Scuba</span>
+        <span class="tag">Catamaran Cruise</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        Couples Negril is one of the most celebrated honeymoon resorts in Jamaica — located on legendary 7-Mile Beach, couples-only, and packed with inclusions no other resort offers: free scuba diving, sunset catamaran cruises, and a complimentary honeymoon package (spa treatment + room décor) with a 6-night stay. Priced similarly to Iberostar Rose Hall but with a far more romantic atmosphere.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$3,304</span>
+        <span class="price-note">per room · 7 nights · est.</span>
+      </div>
+      <a href="https://www.couples.com/resort/couples-negril" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 8: Riu Palace Antillas — Claude suggestion -->
+  <div class="card" data-location="aruba" data-price="3990" data-score="4" data-keywords="riu palace antillas aruba palm beach adults-only 24h all-inclusive junior suite ocean view casino">
+    <div class="card-img-wrap">
+      <img src="https://www.riu.com/media-library/riu-palace-antillas/hotel-riu-palace-antillas-pool.jpg" alt="Riu Palace Antillas Aruba" onerror="this.style.background='#3a6b7a';this.style.display='block'">
+      <span class="card-badge" style="background:var(--blush)">✨ Claude Pick</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Palm Beach, Aruba</div>
+      <h2 class="card-title">Riu Palace Antillas</h2>
+      <p class="card-suite">Junior Suite Ocean View · Adults Only</p>
+      <div class="card-tags">
+        <span class="tag highlight">Adults-Only</span>
+        <span class="tag">Palm Beach</span>
+        <span class="tag">24h All-Inclusive</span>
+        <span class="tag">Casino Access</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        A strong mid-range alternative to JOIA Aruba — also adults-only on the same stunning Palm Beach strip, with 24-hour all-inclusive service, 5 restaurants, and full exchange privileges with the adjacent Riu Palace Aruba. At roughly a third the cost of JOIA, it's ideal if you want the Aruba experience without the ultra-luxury price tag.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$3,990</span>
+        <span class="price-note">per room · 7 nights · est.</span>
+      </div>
+      <a href="https://www.riu.com/en/hotel/aruba/palmbeach/hotel-riu-palace-antillas" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD 9: Nayara Springs — Claude suggestion -->
+  <div class="card" data-location="costa rica" data-price="6580" data-score="5" data-keywords="nayara springs adults only costa rica arenal volcano la fortuna private plunge pool hot springs rainforest jungle honeymoon villa">
+    <div class="card-img-wrap">
+      <img src="https://nayarasprings.com/wp-content/uploads/2020/01/nayara-springs-villa-plunge-pool.jpg" alt="Nayara Springs Costa Rica" onerror="this.style.background='#2c1f14';this.style.display='block'">
+      <span class="card-badge" style="background:var(--blush)">✨ Claude Pick</span>
+    </div>
+    <div class="card-body">
+      <div class="card-location">Arenal Volcano, Costa Rica</div>
+      <h2 class="card-title">Nayara Springs</h2>
+      <p class="card-suite">Private Villa with Natural Hot Spring Plunge Pool · Adults Only</p>
+      <div class="card-tags">
+        <span class="tag highlight">Private Hot Spring Pool</span>
+        <span class="tag">Adults-Only</span>
+        <span class="tag">Rainforest Villas</span>
+        <span class="tag">Rated #1 in CR</span>
+      </div>
+      <div class="card-suggestion">
+        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
+        Rated one of the most romantic resorts in the world — and the top hotel in Costa Rica on TripAdvisor. Every villa has its own private plunge pool fed by natural thermal mineral springs. An entirely different experience from beach resorts: volcano views, sloths in the trees, and nightly rainforest sounds. Perfect if you want something unforgettable and unlike anything in the existing list.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="price">
+        <span class="price-label">Starting From</span>
+        <span class="price-value">$6,580</span>
+        <span class="price-note">per villa · 7 nights · est.</span>
+      </div>
+      <a href="https://nayarasprings.com" target="_blank" class="card-link">
+        Explore ↗
+      </a>
+    </div>
+  </div>
+
+  <div class="no-results" id="noResults">No resorts match your search. Try a different filter or keyword.</div>
+</div>
+
+<!-- COMPARISON TABLE -->
+<div class="compare-section">
+  <h2 class="section-title">Side-by-Side Comparison</h2>
+  <p class="section-sub">All resorts · October 19–26 · 7 Nights</p>
+
+  <div class="table-controls">
+    <div class="table-filter-wrap">
+      <span class="table-filter-label">Filter by Score:</span>
+      <button class="table-filter-btn active" data-score-min="0">All</button>
+      <button class="table-filter-btn" data-score-min="5">♥♥♥♥♥ only</button>
+      <button class="table-filter-btn" data-score-min="4">♥♥♥♥+</button>
+      <button class="table-filter-btn" data-score-min="3">♥♥♥+</button>
+    </div>
+    <div class="table-sort-wrap">
+      <span class="table-filter-label">Sort by:</span>
+      <button class="table-sort-btn active" data-sort="default">Default</button>
+      <button class="table-sort-btn" data-sort="price-asc">Price ↑</button>
+      <button class="table-sort-btn" data-sort="price-desc">Price ↓</button>
+      <button class="table-sort-btn" data-sort="score-desc">Score ↓</button>
+    </div>
+  </div>
+
+  <table class="compare-table" id="compareTable">
+    <thead>
+      <tr>
+        <th>Resort</th>
+        <th>Location</th>
+        <th>Suite Type</th>
+        <th>Price</th>
+        <th>Honeymoon Score</th>
+      </tr>
+    </thead>
+    <tbody id="compareBody">
+    </tbody>
+  </table>
+  <p class="table-count"><span id="tableCount">9</span> resorts shown</p>
+</div>
+
+<script>
+  const tableData = [
+    { name: "Sandals Ochi Resort", location: "Ocho Rios, Jamaica", suite: "Riviera Honeymoon Luxury", price: 4056, score: 5, claude: false, bg: "" },
+    { name: "Iberostar Rose Hall Suites", location: "Montego Bay, Jamaica", suite: "Junior Suite Ocean Room", price: 3131, score: 4, claude: false, bg: "" },
+    { name: "JOIA Aruba by Iberostar", location: "Noord, Aruba", suite: "Master Butler Suite King", price: 11752, score: 5, claude: false, bg: "" },
+    { name: "Secrets Baby Beach Aruba", location: "San Nicolas, Aruba", suite: "Preferred Club Jr. Suite Swim Out", price: 9715, score: 5, claude: false, bg: "" },
+    { name: "Riu Guanacaste", location: "Guanacaste, Costa Rica", suite: "Deluxe Room Pool View", price: 2342, score: 3, claude: false, bg: "" },
+    { name: "Secrets Papagayo Costa Rica", location: "Papagayo, Costa Rica", suite: "Preferred Club Bungalow, Ocean Front", price: 6572, score: 5, claude: false, bg: "" },
+    { name: "Couples Negril", location: "Negril, Jamaica", suite: "Beachfront Suite · Couples Only", price: 3304, score: 5, claude: true, bg: "#f0f6ff" },
+    { name: "Riu Palace Antillas", location: "Palm Beach, Aruba", suite: "Junior Suite Ocean View · Adults Only", price: 3990, score: 4, claude: true, bg: "#f0f6ff" },
+    { name: "Nayara Springs", location: "Arenal Volcano, Costa Rica", suite: "Private Villa · Hot Spring Plunge Pool", price: 6580, score: 5, claude: true, bg: "#f0f6ff" },
+  ];
+
+  let currentScoreMin = 0;
+  let currentSort = "default";
+
+  function hearts(score) {
+    return Array.from({length: 5}, (_, i) =>
+      `<span class="heart${i < score ? '' : ' empty'}">♥</span>`
+    ).join('');
+  }
+
+  function renderTable() {
+    let rows = tableData.filter(r => r.score >= currentScoreMin);
+
+    if (currentSort === "price-asc") rows.sort((a,b) => a.price - b.price);
+    else if (currentSort === "price-desc") rows.sort((a,b) => b.price - a.price);
+    else if (currentSort === "score-desc") rows.sort((a,b) => b.score - a.score);
+
+    const tbody = document.getElementById('compareBody');
+    tbody.innerHTML = rows.map(r => `
+      <tr style="${r.bg ? 'background:' + r.bg + ';' : ''}">
+        <td class="resort-name">${r.name}${r.claude ? ' <span class="claude-badge">Claude</span>' : ''}</td>
+        <td>${r.location}</td>
+        <td>${r.suite}</td>
+        <td class="price-cell">$${r.price.toLocaleString()}</td>
+        <td><div class="honeymoon-score">${hearts(r.score)}</div></td>
+      </tr>
+    `).join('');
+
+    document.getElementById('tableCount').textContent = rows.length;
+  }
+
+  document.querySelectorAll('.table-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.table-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentScoreMin = parseInt(btn.dataset.scoreMin);
+      renderTable();
+    });
+  });
+
+  document.querySelectorAll('.table-sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.table-sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSort = btn.dataset.sort;
+      renderTable();
+    });
+  });
+
+  renderTable();
+</script>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <h2 class="section-title">Honeymoon Planning Tips <span class="claude-badge" style="font-size:11px;padding:3px 10px;vertical-align:middle;">by Claude</span></h2>
+  <p class="section-sub">Make the most of your October getaway</p>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🌅</div>
+      <div class="tip-title">October is Prime Season</div>
+      <div class="tip-body">Jamaica and Aruba sit outside the main hurricane belt. October brings warm temps, low crowds, and off-peak pricing — ideal timing.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💌</div>
+      <div class="tip-title">Tell Them It's Your Honeymoon</div>
+      <div class="tip-body">Always notify the resort at booking and again at check-in. Most properties offer complimentary room décor, rose petals, or a welcome amenity for honeymooners.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🛁</div>
+      <div class="tip-title">Upgrade Your Room Category</div>
+      <div class="tip-body">Even a one-tier room upgrade — to a suite with a plunge pool or butler service — dramatically elevates the honeymoon experience. Often worth the cost.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🍾</div>
+      <div class="tip-title">Pre-Book Romantic Experiences</div>
+      <div class="tip-body">Private dinners on the beach, sunset sailing, couples spa packages, and snorkeling tours sell out. Reserve these before you arrive, not after.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📋</div>
+      <div class="tip-title">Travel Insurance is a Must</div>
+      <div class="tip-body">With suites ranging up to $11K+, protect your investment. Look for Cancel for Any Reason (CFAR) policies — especially for October travel in the Caribbean.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">✈️</div>
+      <div class="tip-title">Factor in Flight Costs</div>
+      <div class="tip-body">Pittsburgh (PIT) has direct options to Montego Bay and connecting routes to Aruba and Costa Rica. Book flights early — October is still competitive for Caribbean routes.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Honeymoon Suites Guide · October 19–26 · 7 Nights · All prices are starting rates and subject to change
+</footer>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.card[data-price]'));
+  const noResults = document.getElementById('noResults');
+  const resultCount = document.getElementById('resultCount');
+  let activeFilter = 'all';
+
+  function filterAndSort() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const sort = document.getElementById('sortSelect').value;
+
+    let visible = cards.filter(card => {
+      const loc = card.dataset.location;
+      const keywords = card.dataset.keywords;
+      const text = card.innerText.toLowerCase();
+
+      const matchesFilter = activeFilter === 'all' || loc.includes(activeFilter);
+      const matchesSearch = !query || text.includes(query) || keywords.includes(query);
+      return matchesFilter && matchesSearch;
+    });
+
+    // Sort
+    if (sort === 'price-asc') visible.sort((a,b) => +a.dataset.price - +b.dataset.price);
+    else if (sort === 'price-desc') visible.sort((a,b) => +b.dataset.price - +a.dataset.price);
+    else if (sort === 'honeymoon') visible.sort((a,b) => +b.dataset.score - +a.dataset.score);
+
+    const grid = document.getElementById('resortGrid');
+
+    cards.forEach(c => { c.style.display = 'none'; });
+    visible.forEach((c, i) => {
+      c.style.display = 'flex';
+      c.style.animationDelay = (i * 0.05) + 's';
+      grid.appendChild(c);
+    });
+
+    noResults.style.display = visible.length === 0 ? 'block' : 'none';
+    resultCount.textContent = visible.length;
+  }
+
+  document.getElementById('searchInput').addEventListener('input', filterAndSort);
+  document.getElementById('sortSelect').addEventListener('change', filterAndSort);
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      filterAndSort();
+    });
+  });
+</script>
+</body>
+</html>
