@@ -1,1445 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Honeymoon Suites — October 19–26</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Honeymoon Resort Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
-  :root {
-    --cream: #faf6f0;
-    --sand: #e8ddd0;
-    --blush: #c9a98a;
-    --deep: #2c1f14;
-    --ocean: #3a6b7a;
-    --ocean-light: #5b9aaa;
-    --gold: #b8965a;
-    --text: #3d2e22;
-    --muted: #7a6a5a;
-    --card-bg: #ffffff;
-    --shadow: 0 4px 30px rgba(44,31,20,0.10);
-    --radius: 16px;
-  }
+:root {
+  --cream:#faf6f0; --sand:#e8ddd0; --blush:#c9a98a; --deep:#2c1f14;
+  --ocean:#3a6b7a; --gold:#b8965a; --text:#3d2e22; --muted:#7a6a5a;
+  --jamaica:#b8965a; --aruba:#3a6b7a; --costarica:#2d6a4f; --claude:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);}
+.page{max-width:1100px;margin:0 auto;padding:32px 24px 60px;}
+h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--deep);margin-bottom:4px;}
+.sub{font-size:13px;color:var(--muted);margin-bottom:24px;font-weight:300;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* FILTER TABS */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.filter-btn{padding:7px 18px;border-radius:100px;border:1.5px solid var(--sand);background:#fff;
+  font-family:'Jost',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.filter-btn:hover{border-color:var(--ocean);color:var(--ocean);}
+.filter-btn.active{color:#fff;border-color:transparent;}
+.filter-btn[data-f="all"].active{background:var(--deep);}
+.filter-btn[data-f="jamaica"].active{background:var(--jamaica);}
+.filter-btn[data-f="aruba"].active{background:var(--aruba);}
+.filter-btn[data-f="costa-rica"].active{background:var(--costarica);}
+.filter-btn[data-f="claude"].active{background:var(--claude);}
 
-  body {
-    font-family: 'Jost', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-  }
+/* MAP */
+#map{width:100%;height:480px;border-radius:14px;border:1.5px solid var(--sand);z-index:1;}
 
-  /* HERO */
-  .hero {
-    background: linear-gradient(135deg, #2c1f14 0%, #3a6b7a 60%, #5b9aaa 100%);
-    padding: 64px 32px 52px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-img {
-    position: absolute;
-    inset: 0;
-    background-image: url('https://raw.githubusercontent.com/iperegoncev/Family/main/Ocean.jpg');
-    
-    
-    background-size: cover;
-    background-position: center 80%;
-    z-index: 0;
-  }
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(44,31,20,0.72) 0%, rgba(58,107,122,0.65) 60%, rgba(91,154,170,0.55) 100%);
-    z-index: 1;
-  }
-  .hero > *:not(.hero-img):not(.hero-overlay) {
-    position: relative;
-    z-index: 2;
-  }
-  .hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-  .hero-eyebrow {
-    font-family: 'Jost', sans-serif;
-    font-weight: 300;
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--blush);
-    margin-bottom: 14px;
-  }
-  .hero h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
-    font-size: clamp(38px, 6vw, 68px);
-    color: #fff;
-    line-height: 1.1;
-    margin-bottom: 10px;
-  }
-  .hero h1 em { font-style: italic; color: var(--blush); }
-  .hero-sub {
-    font-size: 14px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 1px;
-    margin-bottom: 36px;
-  }
-  .hero-meta {
-    display: inline-flex;
-    gap: 24px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .hero-pill {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    backdrop-filter: blur(8px);
-    padding: 8px 20px;
-    border-radius: 100px;
-    font-size: 13px;
-    color: #fff;
-    font-weight: 300;
-  }
+/* CARD PANEL */
+.panel{display:grid;grid-template-columns:1fr 340px;border:1.5px solid var(--sand);border-top:none;
+  border-radius:0 0 14px 14px;background:#fff;overflow:hidden;margin-top:-4px;}
+@media(max-width:700px){.panel{grid-template-columns:1fr;}}
 
-  /* CONTROLS */
-  .controls {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 36px 24px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 220px;
-    max-width: 380px;
-  }
-  .search-wrap svg {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    pointer-events: none;
-  }
-  #searchInput {
-    width: 100%;
-    padding: 12px 16px 12px 42px;
-    border: 1.5px solid var(--sand);
-    border-radius: 100px;
-    background: #fff;
-    font-family: 'Jost', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  #searchInput:focus { border-color: var(--ocean-light); }
-  #searchInput::placeholder { color: var(--muted); }
+/* TABLE */
+.tbl-wrap{overflow:auto;max-height:320px;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:var(--deep);color:#fff;padding:10px 14px;text-align:left;
+  font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:500;position:sticky;top:0;}
+tbody tr{cursor:pointer;transition:background 0.15s;}
+tbody tr:hover td{background:#faf6f0;}
+tbody tr.selected td{background:#f0f4f7;}
+td{padding:10px 14px;border-bottom:1px solid var(--sand);vertical-align:middle;color:var(--text);}
+tr:last-child td{border-bottom:none;}
+.td-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle;flex-shrink:0;}
+.td-name{font-weight:500;color:var(--deep);}
+.td-price{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--ocean);}
+.td-hearts{color:var(--blush);font-size:11px;letter-spacing:1px;}
 
-  .filter-wrap {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .filter-btn {
-    padding: 8px 18px;
-    border-radius: 100px;
-    border: 1.5px solid var(--sand);
-    background: #fff;
-    font-family: 'Jost', sans-serif;
-    font-size: 13px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .filter-btn:hover { border-color: var(--ocean); color: var(--ocean); }
-  .filter-btn.active { background: var(--ocean); border-color: var(--ocean); color: #fff; }
+/* DETAIL CARD */
+.detail{border-left:1.5px solid var(--sand);display:flex;flex-direction:column;}
+.detail-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;font-weight:300;}
+.detail-empty .icon{font-size:36px;}
+.card{display:none;flex-direction:column;}
+.card.show{display:flex;}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--sand);}
+.card-icon-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.card-emoji{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:22px;flex-shrink:0;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--deep);line-height:1.2;}
+.card-loc{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:0.5px;}
+.badge{display:inline-block;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  padding:2px 8px;border-radius:100px;margin-top:4px;background:#ede8fb;color:#5b21b6;}
+.card-body{padding:12px 20px;flex:1;}
+.card-row{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:12px;padding:7px 0;border-bottom:1px solid var(--sand);color:var(--muted);}
+.card-row:last-of-type{border-bottom:none;}
+.card-row .lbl{font-weight:500;color:var(--deep);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;min-width:55px;}
+.card-row .val{text-align:right;color:var(--text);font-size:12px;}
+.card-price{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--deep);}
+.card-hearts{color:var(--blush);font-size:13px;letter-spacing:2px;}
+.bullets{list-style:none;padding:10px 0 0;}
+.bullets li{font-size:12px;color:var(--muted);padding:4px 0 4px 16px;position:relative;line-height:1.5;}
+.bullets li::before{content:"—";position:absolute;left:0;color:var(--blush);}
+.card-footer{padding:12px 20px 16px;border-top:1px solid var(--sand);}
+.card-link{font-size:12px;color:var(--ocean);text-decoration:none;font-weight:500;}
+.card-link:hover{text-decoration:underline;}
 
-  .sort-wrap select {
-    padding: 8px 32px 8px 14px;
-    border: 1.5px solid var(--sand);
-    border-radius: 100px;
-    background: #fff;
-    font-family: 'Jost', sans-serif;
-    font-size: 13px;
-    color: var(--text);
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6a5a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    
-    background-position: right 12px center;
-    outline: none;
-  }
-
-  /* STATS BAR */
-  .stats-bar {
-    max-width: 1100px;
-    margin: 16px auto 0;
-    padding: 0 24px;
-    font-size: 13px;
-    color: var(--muted);
-    font-weight: 300;
-  }
-  #resultCount { color: var(--ocean); font-weight: 500; }
-
-  /* GRID */
-  .grid {
-    max-width: 1100px;
-    margin: 24px auto 60px;
-    padding: 0 24px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 28px;
-  }
-
-  /* CARD */
-  .card {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.25s, box-shadow 0.25s;
-    animation: fadeUp 0.4s ease both;
-  }
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(44,31,20,0.15);
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-badge {
-    position: absolute;
-    top: 14px; left: 14px;
-    background: rgba(44,31,20,0.75);
-    backdrop-filter: blur(6px);
-    color: #fff;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border-radius: 100px;
-    font-family: 'Jost', sans-serif;
-    font-weight: 400;
-  }
-  .card-badge.top-pick { background: var(--gold); }
-  .card-badge.best-value { background: var(--ocean); }
-
-  .card-img-wrap {
-    position: relative;
-    height: 210px;
-    overflow: hidden;
-    background: var(--sand);
-    flex-shrink: 0;
-  }
-  .card-img-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
-  }
-  .card:hover .card-img-wrap img { transform: scale(1.05); }
-
-  .card-body {
-    padding: 22px 22px 14px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  .card-location {
-    font-size: 10px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--ocean);
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--deep);
-    line-height: 1.2;
-    margin-bottom: 10px;
-  }
-  .card-suite {
-    font-size: 13px;
-    color: var(--muted);
-    font-weight: 300;
-    margin-bottom: 16px;
-    font-style: italic;
-  }
-
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  .tag {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 100px;
-    background: var(--cream);
-    color: var(--muted);
-    border: 1px solid var(--sand);
-  }
-  .tag.highlight { background: #eef7fa; color: var(--ocean); border-color: #c0dde5; }
-
-  .card-suggestion {
-    background: linear-gradient(135deg, #f0f6ff, #eaf2fb);
-    border-left: 3px solid #5b8fc9;
-    border-radius: 0 8px 8px 0;
-    padding: 10px 14px;
-    margin-bottom: 16px;
-    font-size: 12.5px;
-    color: var(--text);
-    line-height: 1.5;
-  }
-  .card-suggestion strong { color: #3a6aab; font-weight: 600; display: block; margin-bottom: 4px; font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; }
-  .claude-badge { display: inline-block; background: #3a6aab; color: #fff; font-size: 9px; font-weight: 700; letter-spacing: 0.8px; padding: 1px 7px; border-radius: 100px; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
-
-  .card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 22px;
-    border-top: 1px solid var(--sand);
-    flex-shrink: 0;
-  }
-  .price {
-    display: flex;
-    flex-direction: column;
-  }
-  .price-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-  .price-value {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--deep);
-    line-height: 1.1;
-  }
-  .price-note { font-size: 10px; color: var(--muted); }
-
-  .card-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--deep);
-    color: #fff;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    padding: 10px 18px;
-    border-radius: 100px;
-    transition: background 0.2s;
-  }
-  .card-link:hover { background: var(--ocean); }
-
-  .table-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  .table-filter-wrap, .table-sort-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .table-filter-label {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 400;
-    white-space: nowrap;
-  }
-  .table-filter-btn, .table-sort-btn {
-    padding: 6px 14px;
-    border-radius: 100px;
-    border: 1.5px solid var(--sand);
-    background: #fff;
-    font-family: 'Jost', sans-serif;
-    font-size: 12px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .table-filter-btn:hover, .table-sort-btn:hover { border-color: var(--ocean); color: var(--ocean); }
-  .table-filter-btn.active, .table-sort-btn.active { background: var(--sand); border-color: var(--blush); color: var(--deep); }
-  .table-count {
-    margin-top: 10px;
-    font-size: 12px;
-    color: var(--muted);
-    text-align: right;
-  }
-  .table-count span { color: var(--ocean); font-weight: 500; }
-  .compare-section {
-    max-width: 1100px;
-    margin: 0 auto 60px;
-    padding: 0 24px;
-  }
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 30px;
-    font-weight: 300;
-    color: var(--deep);
-    margin-bottom: 6px;
-  }
-  .section-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 22px;
-    font-weight: 300;
-  }
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    font-size: 13.5px;
-  }
-  .compare-table th {
-    background: var(--deep);
-    color: #fff;
-    font-weight: 400;
-    font-family: 'Jost', sans-serif;
-    letter-spacing: 0.5px;
-    padding: 14px 16px;
-    text-align: left;
-  }
-  .compare-table td {
-    padding: 13px 16px;
-    border-bottom: 1px solid var(--sand);
-    vertical-align: middle;
-  }
-  .compare-table tr:last-child td { border-bottom: none; }
-  .compare-table tr:nth-child(even) td { background: #faf8f5; }
-  .compare-table .resort-name { font-weight: 500; color: var(--deep); }
-  .compare-table .price-cell { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--ocean); }
-  .honeymoon-score { display: flex; gap: 2px; }
-  .heart { color: var(--blush); font-size: 14px; }
-  .heart.empty { color: var(--sand); }
-
-  /* TIPS */
-  .tips-section {
-    max-width: 1100px;
-    margin: 0 auto 70px;
-    padding: 0 24px;
-  }
-  .tips-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 18px;
-    margin-top: 22px;
-  }
-  .tip-card {
-    background: #fff;
-    border-radius: var(--radius);
-    padding: 22px;
-    box-shadow: var(--shadow);
-    border-top: 3px solid var(--gold);
-  }
-  .tip-icon { font-size: 26px; margin-bottom: 10px; }
-  .tip-title { font-weight: 500; font-size: 14px; color: var(--deep); margin-bottom: 6px; }
-  .tip-body { font-size: 13px; color: var(--muted); line-height: 1.6; font-weight: 300; }
-
-  /* NO RESULTS */
-  .no-results {
-    text-align: center;
-    padding: 60px 24px;
-    color: var(--muted);
-    font-size: 15px;
-    display: none;
-    grid-column: 1/-1;
-  }
-
-  /* FOOTER */
-  footer {
-    background: var(--deep);
-    text-align: center;
-    padding: 28px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 1px;
-    font-weight: 300;
-  }
-
-  @media (max-width: 640px) {
-    .grid { grid-template-columns: 1fr; }
-    .controls { flex-direction: column; align-items: stretch; }
-    .filter-wrap { justify-content: flex-start; }
-  }
-
-  /* TABS NAV */
-  .page-tabs {
-    display: flex;
-    gap: 0;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 24px;
-    border-bottom: 2px solid var(--sand);
-    position: sticky;
-    top: 0;
-    background: var(--cream);
-    z-index: 100;
-  }
-  .page-tab {
-    padding: 16px 28px;
-    font-family: 'Jost', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--muted);
-    background: transparent;
-    border: none;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .page-tab:hover { color: var(--ocean); }
-  .page-tab.active { color: var(--deep); border-bottom-color: var(--ocean); font-weight: 500; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+/* LEAFLET OVERRIDES */
+.leaflet-container{font-family:'Jost',sans-serif;}
+.custom-pin{width:28px;height:28px;border-radius:50%;border:3px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;color:#fff;cursor:pointer;
+  transition:transform 0.15s;}
+.custom-pin:hover{transform:scale(1.2);}
+.custom-pin.pulse{animation:pin-pulse 2s ease-in-out infinite;}
+@keyframes pin-pulse{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,0.25),0 0 0 0 rgba(184,150,90,0.4)}
+  50%{box-shadow:0 2px 8px rgba(0,0,0,0.25),0 0 0 10px rgba(184,150,90,0)}}
+.leaflet-popup-content-wrapper{border-radius:10px;border:1px solid var(--sand);box-shadow:0 4px 20px rgba(44,31,20,0.12);}
+.leaflet-popup-tip{background:#fff;}
+.popup-inner{font-family:'Jost',sans-serif;padding:2px 4px;}
+.popup-name{font-weight:500;font-size:13px;color:var(--deep);margin-bottom:2px;}
+.popup-loc{font-size:11px;color:var(--muted);}
+.popup-price{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--ocean);margin-top:4px;}
 </style>
 </head>
 <body>
+<div class="page">
+  <h1>Your Amazing Honeymoon</h1>
+  <p class="sub">9 resorts across Jamaica, Aruba &amp; Costa Rica &mdash; click a pin or row to explore</p>
 
-<!-- HERO -->
-<header class="hero">
-  <div class="hero-img"></div>
-  <div class="hero-overlay"></div>
-
-  <h1>Your Amazing<br><em>Honeymoon</em></h1>
-  
-  <div class="hero-meta">
-    <span class="hero-pill">🇯🇲 Jamaica</span>
-    <span class="hero-pill">🇦🇼 Aruba</span>
-    <span class="hero-pill">🇨🇷 Costa Rica</span>
-    <span class="hero-pill">$2,342 – $11,752</span>
-  </div>
-</header>
-
-<!-- TAB NAV -->
-<nav class="page-tabs">
-  <button class="page-tab active" onclick="switchTab('resorts', this)">🏨 Resorts</button>
-  <button class="page-tab" onclick="switchTab('compare', this)">📊 Compare</button>
-  <button class="page-tab" onclick="switchTab('dashboard', this)">📈 Dashboard</button>
-  <button class="page-tab" onclick="switchTab('map',this)">🗺️ Map</button>
-</nav>
-
-<div id="tab-resorts" class="tab-panel active">
-
-<!-- CONTROLS -->
-<div class="controls">
-  <div class="search-wrap">
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-    </svg>
-    <input type="text" id="searchInput" placeholder="Search resort, location, suite type…">
-  </div>
-  <div class="filter-wrap">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="jamaica">Jamaica</button>
-    <button class="filter-btn" data-filter="aruba">Aruba</button>
-    <button class="filter-btn" data-filter="costa rica">Costa Rica</button>
-  </div>
-  <div class="sort-wrap">
-    <select id="sortSelect">
-      <option value="default">Sort: Featured</option>
-      <option value="price-asc">Price: Low to High</option>
-      <option value="price-desc">Price: High to Low</option>
-      <option value="honeymoon">Honeymoon Score</option>
-    </select>
-  </div>
-</div>
-
-<div class="stats-bar">
-  Showing <span id="resultCount">9</span> of 9 resorts
-</div>
-
-<!-- GRID -->
-<div class="grid" id="resortGrid">
-
-  <!-- CARD 1: Sandals Ochi -->
-  <div class="card" data-location="jamaica" data-price="4056" data-score="5" data-keywords="sandals ochi resort jamaica riviera honeymoon luxury all-inclusive">
-    <div class="card-img-wrap">
-      <img src="https://raw.githubusercontent.com/iperegoncev/Family/a5d14247e0ddf371ba9a263b3b2789bebf2e5371/Sandals_Ochi.avif" alt="Sandals Ochi Resort" onerror="this.style.background='#c9a98a';this.style.display='block'">
-      <span class="card-badge top-pick">⭐ Top Pick</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Ocho Rios, Jamaica</div>
-      <h2 class="card-title">Sandals Ochi Resort</h2>
-      <p class="card-suite">Riviera Honeymoon Luxury Suite</p>
-      <div class="card-tags">
-        <span class="tag highlight">All-Inclusive</span>
-        <span class="tag">Ocean Views</span>
-        <span class="tag">Butler Service</span>
-        <span class="tag">Couples-Only</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        Book the "Love Nest" butler suite upgrade — Sandals' concierge team will arrange a private candlelit dinner on your terrace overlooking the Caribbean. Ask about their complimentary honeymoon amenity package at check-in.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$4,056</span>
-        <span class="price-note">per room · 7 nights</span>
-      </div>
-      <a href="https://www.sandals.com/ochi/" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
+  <div class="filters">
+    <button class="filter-btn active" data-f="all">All Resorts</button>
+    <button class="filter-btn" data-f="jamaica">&#127464;&#127474; Jamaica</button>
+    <button class="filter-btn" data-f="aruba">&#127462;&#127484; Aruba</button>
+    <button class="filter-btn" data-f="costa-rica">&#127464;&#127479; Costa Rica</button>
+    <button class="filter-btn" data-f="claude">&#10022; Claude Picks</button>
   </div>
 
-  <!-- CARD 2: Iberostar Rose Hall -->
-  <div class="card" data-location="jamaica" data-price="3131" data-score="4" data-keywords="iberostar selection rose hall suites montego bay jamaica junior suite ocean room">
-    <div class="card-img-wrap">
-      <img src="https://www.iberostar.com/content/dam/iberostar/hotels/mex-dom-jam-cub/iberostar-selection-rose-hall-suites/hotel-gallery/iberostar-selection-rose-hall-suites-exterior.jpg" alt="Iberostar Rose Hall Suites" onerror="this.style.background='#5b9aaa';this.style.display='block'">
-      <span class="card-badge best-value">Best Value</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Montego Bay, Jamaica</div>
-      <h2 class="card-title">Iberostar Selection Rose Hall Suites</h2>
-      <p class="card-suite">Junior Suite Ocean Room</p>
-      <div class="card-tags">
-        <span class="tag highlight">Adults-Only Wing</span>
-        <span class="tag">Oceanfront</span>
-        <span class="tag">Gourmet Dining</span>
-        <span class="tag">Spa</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        Request a high-floor suite facing west for spectacular Montego Bay sunsets. The Star Prestige section offers a private pool lounge — worth the upgrade for an intimate honeymoon experience.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$3,131</span>
-        <span class="price-note">per room · 7 nights</span>
-      </div>
-      <a href="https://www.iberostar.com/en/hotels/montego-bay/iberostar-selection-rose-hall-suites" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
+  <div id="map"></div>
 
-  <!-- CARD 3: JOIA Aruba -->
-  <div class="card" data-location="aruba" data-price="11752" data-score="5" data-keywords="joia aruba iberostar norte noord master butler suite king luxury">
-    <div class="card-img-wrap">
-      <img src="https://www.iberostar.com/content/dam/iberostar/hotels/aruba/joia-aruba-by-iberostar/hotel-gallery/joia-aruba-by-iberostar-pool-exterior.jpg" alt="JOIA Aruba by Iberostar" onerror="this.style.background='#3a6b7a';this.style.display='block'">
-      <span class="card-badge" style="background:var(--blush)">Ultra-Luxury</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Noord, Aruba</div>
-      <h2 class="card-title">JOIA Aruba by Iberostar</h2>
-      <p class="card-suite">Master Butler Suite King</p>
-      <div class="card-tags">
-        <span class="tag highlight">Private Butler</span>
-        <span class="tag">Infinity Pool</span>
-        <span class="tag">Adults-Only</span>
-        <span class="tag">Eagle Beach</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        Eagle Beach — steps from the resort — is consistently rated one of the world's best beaches. Have your butler arrange a private cabana with champagne at sunset. October weather in Aruba is outside hurricane season: near-perfect skies and calm seas.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$11,752</span>
-        <span class="price-note">per room · 7 nights</span>
-      </div>
-      <a href="https://www.iberostar.com/en/hotels/eagle-beach/joia-aruba-by-iberostar" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
-
-  <!-- CARD 4: Secrets Baby Beach -->
-  <div class="card" data-location="aruba" data-price="9715" data-score="5" data-keywords="secrets baby beach aruba san nicolas preferred club junior suite swim out hyatt">
-    <div class="card-img-wrap">
-      <img src="https://www.hyattinclusivecollection.com/content/dam/secrets-resorts/aruba/baby-beach/gallery/secrets-aruba-baby-beach-exterior.jpg" alt="Secrets Baby Beach Aruba" onerror="this.style.background='#b8965a';this.style.display='block'">
-      <span class="card-badge" style="background:var(--ocean)">Swim-Out Suite</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">San Nicolas, Aruba</div>
-      <h2 class="card-title">Secrets Baby Beach Aruba</h2>
-      <p class="card-suite">Preferred Club Junior Suite Swim Out</p>
-      <div class="card-tags">
-        <span class="tag highlight">Swim-Out Pool</span>
-        <span class="tag">Preferred Club</span>
-        <span class="tag">Adults-Only</span>
-        <span class="tag">Newer Property</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        The swim-out suite lets you slip directly from your private terrace into the pool — one of the most romantic room features available. Preferred Club guests get dedicated lounge access, à la carte dining, and premium spirits stocked in-room.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$9,715</span>
-        <span class="price-note">per room · 7 nights</span>
-      </div>
-      <a href="https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/aruba/baby-beach-aruba" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
-
-  <!-- CARD 5: Riu Guanacaste -->
-  <div class="card" data-location="costa rica" data-price="2342" data-score="3" data-keywords="riu guanacaste costa rica guanacaste province deluxe room pool view budget value">
-    <div class="card-img-wrap">
-      <img src="https://www.riu.com/en/hotel/costa-rica/guanacaste/hotel-riu-guanacaste/galeries/hotel-riu-guanacaste-pool.jpg" alt="Riu Guanacaste" onerror="this.style.background='#3a6b7a';this.style.display='block'">
-      <span class="card-badge best-value">Most Affordable</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Guanacaste, Costa Rica</div>
-      <h2 class="card-title">Riu Guanacaste</h2>
-      <p class="card-suite">Deluxe Room Pool View</p>
-      <div class="card-tags">
-        <span class="tag highlight">All-Inclusive</span>
-        <span class="tag">Beachfront</span>
-        <span class="tag">Eco-Destination</span>
-        <span class="tag">Best Price</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        Costa Rica's Guanacaste is dry season in October — ideal conditions. Use the savings vs. other resorts to splurge on a private rainforest zip-line tour or horseback ride on the beach. Ask the concierge for in-room honeymoon decoration on arrival.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$2,342</span>
-        <span class="price-note">per room · 7 nights</span>
-      </div>
-      <a href="https://www.riu.com/en/hotel/costa-rica/guanacaste/hotel-riu-guanacaste" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
-
-  <!-- CARD 6: Secrets Papagayo -->
-  <div class="card" data-location="costa rica" data-price="6572" data-score="5" data-keywords="secrets papagayo costa rica papagayo preferred club bungalow suite ocean front hyatt">
-    <div class="card-img-wrap">
-      <img src="https://www.hyattinclusivecollection.com/content/dam/secrets-resorts/costa-rica/papagayo/gallery/secrets-papagayo-costa-rica-aerial.jpg" alt="Secrets Papagayo Costa Rica" onerror="this.style.background='#2c1f14';this.style.display='block'">
-      <span class="card-badge top-pick">⭐ Top Pick</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Papagayo, Costa Rica</div>
-      <h2 class="card-title">Secrets Papagayo Costa Rica</h2>
-      <p class="card-suite">Preferred Club Bungalow Suite, Ocean Front</p>
-      <div class="card-tags">
-        <span class="tag highlight">Oceanfront Bungalow</span>
-        <span class="tag">Adults-Only</span>
-        <span class="tag">Private Plunge Pool</span>
-        <span class="tag">Jungle Views</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        The bungalow-style suites feel removed from the main resort — perfect for seclusion. Papagayo Peninsula offers world-class snorkeling and sailing excursions. October is the tail of rainy season — lush green landscapes and usually clear mornings; book outdoor activities for AM.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$6,572</span>
-        <span class="price-note">per room · 7 nights</span>
-      </div>
-      <a href="https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/costa-rica/papagayo-costa-rica" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
-
-  <!-- CARD 7: Couples Negril — Claude suggestion -->
-  <div class="card" data-location="jamaica" data-price="3304" data-score="5" data-keywords="couples negril jamaica beachfront suite adults-only honeymoon package catamaran scuba spa">
-    <div class="card-img-wrap">
-      <img src="https://www.couples.com/sites/default/files/2022-08/couples-negril-beach.jpg" alt="Couples Negril" onerror="this.style.background='#5b9aaa';this.style.display='block'">
-      <span class="card-badge" style="background:var(--blush)">✨ Claude Pick</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Negril, Jamaica</div>
-      <h2 class="card-title">Couples Negril</h2>
-      <p class="card-suite">Beachfront Suite · Adults &amp; Couples Only</p>
-      <div class="card-tags">
-        <span class="tag highlight">Couples-Only</span>
-        <span class="tag">7-Mile Beach</span>
-        <span class="tag">Free Scuba</span>
-        <span class="tag">Catamaran Cruise</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        Couples Negril is one of the most celebrated honeymoon resorts in Jamaica — located on legendary 7-Mile Beach, couples-only, and packed with inclusions no other resort offers: free scuba diving, sunset catamaran cruises, and a complimentary honeymoon package (spa treatment + room décor) with a 6-night stay. Priced similarly to Iberostar Rose Hall but with a far more romantic atmosphere.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$3,304</span>
-        <span class="price-note">per room · 7 nights · est.</span>
-      </div>
-      <a href="https://www.couples.com/resort/couples-negril" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
-
-  <!-- CARD 8: Riu Palace Antillas — Claude suggestion -->
-  <div class="card" data-location="aruba" data-price="3990" data-score="4" data-keywords="riu palace antillas aruba palm beach adults-only 24h all-inclusive junior suite ocean view casino">
-    <div class="card-img-wrap">
-      <img src="https://www.riu.com/media-library/riu-palace-antillas/hotel-riu-palace-antillas-pool.jpg" alt="Riu Palace Antillas Aruba" onerror="this.style.background='#3a6b7a';this.style.display='block'">
-      <span class="card-badge" style="background:var(--blush)">✨ Claude Pick</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Palm Beach, Aruba</div>
-      <h2 class="card-title">Riu Palace Antillas</h2>
-      <p class="card-suite">Junior Suite Ocean View · Adults Only</p>
-      <div class="card-tags">
-        <span class="tag highlight">Adults-Only</span>
-        <span class="tag">Palm Beach</span>
-        <span class="tag">24h All-Inclusive</span>
-        <span class="tag">Casino Access</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        A strong mid-range alternative to JOIA Aruba — also adults-only on the same stunning Palm Beach strip, with 24-hour all-inclusive service, 5 restaurants, and full exchange privileges with the adjacent Riu Palace Aruba. At roughly a third the cost of JOIA, it's ideal if you want the Aruba experience without the ultra-luxury price tag.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$3,990</span>
-        <span class="price-note">per room · 7 nights · est.</span>
-      </div>
-      <a href="https://www.riu.com/en/hotel/aruba/palmbeach/hotel-riu-palace-antillas" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
-
-  <!-- CARD 9: Nayara Springs — Claude suggestion -->
-  <div class="card" data-location="costa rica" data-price="6580" data-score="5" data-keywords="nayara springs adults only costa rica arenal volcano la fortuna private plunge pool hot springs rainforest jungle honeymoon villa">
-    <div class="card-img-wrap">
-      <img src="https://nayarasprings.com/wp-content/uploads/2020/01/nayara-springs-villa-plunge-pool.jpg" alt="Nayara Springs Costa Rica" onerror="this.style.background='#2c1f14';this.style.display='block'">
-      <span class="card-badge" style="background:var(--blush)">✨ Claude Pick</span>
-    </div>
-    <div class="card-body">
-      <div class="card-location">Arenal Volcano, Costa Rica</div>
-      <h2 class="card-title">Nayara Springs</h2>
-      <p class="card-suite">Private Villa with Natural Hot Spring Plunge Pool · Adults Only</p>
-      <div class="card-tags">
-        <span class="tag highlight">Private Hot Spring Pool</span>
-        <span class="tag">Adults-Only</span>
-        <span class="tag">Rainforest Villas</span>
-        <span class="tag">Rated #1 in CR</span>
-      </div>
-      <div class="card-suggestion">
-        <strong>✨ Claude's Suggestion <span class="claude-badge">Claude</span></strong>
-        Rated one of the most romantic resorts in the world — and the top hotel in Costa Rica on TripAdvisor. Every villa has its own private plunge pool fed by natural thermal mineral springs. An entirely different experience from beach resorts: volcano views, sloths in the trees, and nightly rainforest sounds. Perfect if you want something unforgettable and unlike anything in the existing list.
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="price">
-        <span class="price-label">Starting From</span>
-        <span class="price-value">$6,580</span>
-        <span class="price-note">per villa · 7 nights · est.</span>
-      </div>
-      <a href="https://nayarasprings.com" target="_blank" class="card-link">
-        Explore ↗
-      </a>
-    </div>
-  </div>
-
-  <div class="no-results" id="noResults">No resorts match your search. Try a different filter or keyword.</div>
-</div>
-
-</div><!-- end tab-resorts -->
-
-<div id="tab-compare" class="tab-panel">
-
-<!-- COMPARISON TABLE -->
-<div class="compare-section">
-  <h2 class="section-title">Side-by-Side Comparison</h2>
-  <p class="section-sub">All resorts · October 19–26 · 7 Nights</p>
-
-  <div class="table-controls">
-    <div class="table-filter-wrap">
-      <span class="table-filter-label">Filter by Score:</span>
-      <button class="table-filter-btn active" data-score-min="0">All</button>
-      <button class="table-filter-btn" data-score-min="5">♥♥♥♥♥ only</button>
-      <button class="table-filter-btn" data-score-min="4">♥♥♥♥+</button>
-      <button class="table-filter-btn" data-score-min="3">♥♥♥+</button>
-    </div>
-    <div class="table-sort-wrap">
-      <span class="table-filter-label">Sort by:</span>
-      <button class="table-sort-btn active" data-sort="default">Default</button>
-      <button class="table-sort-btn" data-sort="price-asc">Price ↑</button>
-      <button class="table-sort-btn" data-sort="price-desc">Price ↓</button>
-      <button class="table-sort-btn" data-sort="score-desc">Score ↓</button>
-    </div>
-  </div>
-
-  <table class="compare-table" id="compareTable">
-    <thead>
-      <tr>
-        <th>Resort</th>
-        <th>Location</th>
-        <th>Suite Type</th>
-        <th>Price</th>
-        <th>Honeymoon Score</th>
-      </tr>
-    </thead>
-    <tbody id="compareBody">
-    </tbody>
-  </table>
-  <p class="table-count"><span id="tableCount">9</span> resorts shown</p>
-</div>
-
-<script>
-  const tableData = [
-    { name: "Sandals Ochi Resort", location: "Ocho Rios, Jamaica", suite: "Riviera Honeymoon Luxury", price: 4056, score: 5, claude: false, bg: "" },
-    { name: "Iberostar Rose Hall Suites", location: "Montego Bay, Jamaica", suite: "Junior Suite Ocean Room", price: 3131, score: 4, claude: false, bg: "" },
-    { name: "JOIA Aruba by Iberostar", location: "Noord, Aruba", suite: "Master Butler Suite King", price: 11752, score: 5, claude: false, bg: "" },
-    { name: "Secrets Baby Beach Aruba", location: "San Nicolas, Aruba", suite: "Preferred Club Jr. Suite Swim Out", price: 9715, score: 5, claude: false, bg: "" },
-    { name: "Riu Guanacaste", location: "Guanacaste, Costa Rica", suite: "Deluxe Room Pool View", price: 2342, score: 3, claude: false, bg: "" },
-    { name: "Secrets Papagayo Costa Rica", location: "Papagayo, Costa Rica", suite: "Preferred Club Bungalow, Ocean Front", price: 6572, score: 5, claude: false, bg: "" },
-    { name: "Couples Negril", location: "Negril, Jamaica", suite: "Beachfront Suite · Couples Only", price: 3304, score: 5, claude: true, bg: "#f0f6ff" },
-    { name: "Riu Palace Antillas", location: "Palm Beach, Aruba", suite: "Junior Suite Ocean View · Adults Only", price: 3990, score: 4, claude: true, bg: "#f0f6ff" },
-    { name: "Nayara Springs", location: "Arenal Volcano, Costa Rica", suite: "Private Villa · Hot Spring Plunge Pool", price: 6580, score: 5, claude: true, bg: "#f0f6ff" },
-  ];
-
-  let currentScoreMin = 0;
-  let currentSort = "default";
-
-  function hearts(score) {
-    return Array.from({length: 5}, (_, i) =>
-      `<span class="heart${i < score ? '' : ' empty'}">♥</span>`
-    ).join('');
-  }
-
-  function renderTable() {
-    let rows = tableData.filter(r => r.score >= currentScoreMin);
-
-    if (currentSort === "price-asc") rows.sort((a,b) => a.price - b.price);
-    else if (currentSort === "price-desc") rows.sort((a,b) => b.price - a.price);
-    else if (currentSort === "score-desc") rows.sort((a,b) => b.score - a.score);
-
-    const tbody = document.getElementById('compareBody');
-    tbody.innerHTML = rows.map(r => `
-      <tr style="${r.bg ? 'background:' + r.bg + ';' : ''}">
-        <td class="resort-name">${r.name}${r.claude ? ' <span class="claude-badge">Claude</span>' : ''}</td>
-        <td>${r.location}</td>
-        <td>${r.suite}</td>
-        <td class="price-cell">$${r.price.toLocaleString()}</td>
-        <td><div class="honeymoon-score">${hearts(r.score)}</div></td>
-      </tr>
-    `).join('');
-
-    document.getElementById('tableCount').textContent = rows.length;
-  }
-
-  document.querySelectorAll('.table-filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.table-filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentScoreMin = parseInt(btn.dataset.scoreMin);
-      renderTable();
-    });
-  });
-
-  document.querySelectorAll('.table-sort-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.table-sort-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentSort = btn.dataset.sort;
-      renderTable();
-    });
-  });
-
-  renderTable();
-</script>
-
-</div><!-- end tab-compare -->
-
-<div id="tab-dashboard" class="tab-panel">
-
-<!-- DASHBOARD -->
-<div class="compare-section" id="dashboard">
-  <h2 class="section-title">Analytics Dashboard</h2>
-  <p class="section-sub">7 visualizations &middot; price, value, romance, weather, destination &amp; map</p>
-
-  <div class="dash-metrics">
-    <div class="dash-metric"><div class="dash-metric-label">Total options</div><div class="dash-metric-val">9</div><div class="dash-metric-sub">3 destinations</div></div>
-    <div class="dash-metric"><div class="dash-metric-label">Price range</div><div class="dash-metric-val">$2.3K&ndash;$11.8K</div><div class="dash-metric-sub">7 nights</div></div>
-    <div class="dash-metric"><div class="dash-metric-label">Avg. price</div><div class="dash-metric-val">$5.9K</div><div class="dash-metric-sub">per room</div></div>
-    <div class="dash-metric"><div class="dash-metric-label">5/5 resorts</div><div class="dash-metric-val">7 of 9</div><div class="dash-metric-sub">top romance score</div></div>
-  </div>
-
-  <div class="dash-grid-2">
-    <div class="dash-card">
-      <div class="dash-card-title">Price comparison</div>
-      <div class="dash-card-sub">Starting price &middot; 7 nights</div>
-      <div class="dash-legend"><span><span class="dash-dot" style="background:#378ADD"></span>From PDF</span><span><span class="dash-dot" style="background:#1D9E75"></span>Claude pick</span></div>
-      <div style="position:relative;width:100%;height:340px;"><canvas id="dc-bar" role="img" aria-label="Bar chart of resort prices">Resort prices from $2,342 to $11,752.</canvas></div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-card-title">Value map</div>
-      <div class="dash-card-sub">Price vs. romance score &mdash; lower-left = best value</div>
-      <div class="dash-legend"><span><span class="dash-dot" style="background:#378ADD"></span>Jamaica</span><span><span class="dash-dot" style="background:#1D9E75"></span>Aruba</span><span><span class="dash-dot" style="background:#D85A30"></span>Costa Rica</span></div>
-      <div style="position:relative;width:100%;height:340px;"><canvas id="dc-scatter" role="img" aria-label="Scatter plot price vs romance">Price vs romance for 9 resorts.</canvas></div>
-    </div>
-  </div>
-
-  <div class="dash-grid-2">
-    <div class="dash-card">
-      <div class="dash-card-title">Avg. price by destination</div>
-      <div class="dash-card-sub">7-night average across resorts in each country</div>
-      <div style="position:relative;width:100%;height:220px;"><canvas id="dc-dest" role="img" aria-label="Average price by destination">Jamaica avg $3,497, Aruba avg $8,486, Costa Rica avg $5,165.</canvas></div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-card-title">Romance score distribution</div>
-      <div class="dash-card-sub">Number of resorts at each score level</div>
-      <div style="position:relative;width:100%;height:220px;"><canvas id="dc-score" role="img" aria-label="Romance score distribution">1 resort at 3, 2 at 4, 6 at 5.</canvas></div>
-    </div>
-  </div>
-
-  <div class="dash-card">
-    <div class="dash-card-title">Multi-dimension radar</div>
-    <div class="dash-card-sub">Click a resort to compare across romance, beach, food, activities, exclusivity and value</div>
-    <div class="dash-radar-tabs" id="dc-radar-tabs"></div>
-    <div style="position:relative;width:100%;max-width:400px;margin:0 auto;height:300px;"><canvas id="dc-radar" role="img" aria-label="Radar chart comparing resort dimensions">Radar chart showing 6 dimension scores.</canvas></div>
-  </div>
-
-  <div class="dash-card">
-    <div class="dash-card-title">October weather by destination</div>
-    <div class="dash-card-sub">Average temperature &middot; rain days &middot; sunshine hours &middot; hurricane risk</div>
-    <div class="dash-weather-grid">
-      <div class="dash-weather-card">
-        <div class="dash-weather-dest">Jamaica</div>
-        <div class="dash-wrow"><span>Avg temp</span><span class="dash-wval">84&deg;F / 29&deg;C</span></div>
-        <div class="dash-wrow"><span>Hurricane risk</span><span class="dash-wval" style="color:#BA7517">Low&ndash;Med</span></div>
-        <div class="dash-wrow"><span>Rain days</span><span class="dash-wval">~8/mo</span></div>
-        <div class="dash-wrow"><span>Sea temp</span><span class="dash-wval">82&deg;F / 28&deg;C</span></div>
-        <div class="dash-wrow"><span>Sunshine</span></div>
-        <div class="dash-wbar" style="--pct:70%;--col:#EF9F27"></div>
-        <div class="dash-wsub">7 hrs/day avg</div>
-      </div>
-      <div class="dash-weather-card">
-        <div class="dash-weather-dest">Aruba</div>
-        <div class="dash-wrow"><span>Avg temp</span><span class="dash-wval">88&deg;F / 31&deg;C</span></div>
-        <div class="dash-wrow"><span>Hurricane risk</span><span class="dash-wval" style="color:#3B6D11">Very low</span></div>
-        <div class="dash-wrow"><span>Rain days</span><span class="dash-wval">~3/mo</span></div>
-        <div class="dash-wrow"><span>Sea temp</span><span class="dash-wval">84&deg;F / 29&deg;C</span></div>
-        <div class="dash-wrow"><span>Sunshine</span></div>
-        <div class="dash-wbar" style="--pct:90%;--col:#EF9F27"></div>
-        <div class="dash-wsub">9 hrs/day avg</div>
-      </div>
-      <div class="dash-weather-card">
-        <div class="dash-weather-dest">Costa Rica</div>
-        <div class="dash-wrow"><span>Avg temp</span><span class="dash-wval">82&deg;F / 28&deg;C</span></div>
-        <div class="dash-wrow"><span>Hurricane risk</span><span class="dash-wval" style="color:#3B6D11">Very low</span></div>
-        <div class="dash-wrow"><span>Rain days</span><span class="dash-wval">~15/mo</span></div>
-        <div class="dash-wrow"><span>Sea temp</span><span class="dash-wval">82&deg;F / 28&deg;C</span></div>
-        <div class="dash-wrow"><span>Sunshine</span></div>
-        <div class="dash-wbar" style="--pct:50%;--col:#EF9F27"></div>
-        <div class="dash-wsub">5 hrs/day avg</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="dash-card">
-    <div class="dash-card-title">Budget breakdown estimate</div>
-    <div class="dash-card-sub">What is typically included vs. extra spend per destination</div>
-    <div class="dash-legend"><span><span class="dash-dot" style="background:#378ADD"></span>Included</span><span><span class="dash-dot" style="background:#1D9E75"></span>Typical extras</span></div>
-    <div style="position:relative;width:100%;height:200px;"><canvas id="dc-budget" role="img" aria-label="Budget breakdown stacked bar">Included vs extras per destination.</canvas></div>
-  </div>
-
-</div><!-- end tab-dashboard -->
-
-
-
-<style>
-  .dash-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px;}
-  .dash-metric{background:#fff;border:1px solid var(--sand);border-radius:12px;padding:14px 16px;}
-  .dash-metric-label{font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
-  .dash-metric-val{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--deep);font-weight:600;}
-  .dash-metric-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-  .dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-  @media(max-width:640px){.dash-grid-2{grid-template-columns:1fr;}}
-  .dash-card{background:#fff;border:1px solid var(--sand);border-radius:14px;padding:20px;margin-bottom:16px;}
-  .dash-card-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--deep);font-weight:400;margin-bottom:2px;}
-  .dash-card-sub{font-size:12px;color:var(--muted);margin-bottom:12px;font-weight:300;}
-  .dash-legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:12px;color:var(--muted);}
-  .dash-legend span{display:flex;align-items:center;gap:5px;}
-  .dash-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;display:inline-block;}
-  .dash-radar-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
-  .dash-rtab{padding:5px 12px;border-radius:100px;border:1px solid var(--sand);background:transparent;font-family:'Jost',sans-serif;font-size:11px;color:var(--muted);cursor:pointer;}
-  .dash-rtab.active{background:var(--ocean);border-color:var(--ocean);color:#fff;}
-  .dash-rtab.claude{border-color:#85B7EB;color:#185FA5;}
-  .dash-rtab.claude.active{background:#185FA5;border-color:#185FA5;}
-  .dash-weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-  @media(max-width:580px){.dash-weather-grid{grid-template-columns:1fr;}}
-  .dash-weather-card{border:1px solid var(--sand);border-radius:10px;padding:14px;}
-  .dash-weather-dest{font-size:13px;font-weight:500;color:var(--deep);margin-bottom:8px;}
-  .dash-wrow{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:2px 0;}
-  .dash-wval{font-weight:500;color:var(--deep);font-size:12px;}
-  .dash-wbar{height:5px;border-radius:3px;background:linear-gradient(to right,var(--col) var(--pct),var(--sand) var(--pct));margin-top:5px;}
-  .dash-wsub{font-size:10px;color:var(--muted);margin-top:2px;}
-  .dash-map-tabs{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0;}
-  .dash-mtab{padding:4px 11px;border-radius:100px;border:1px solid var(--sand);background:transparent;font-family:'Jost',sans-serif;font-size:11px;color:var(--muted);cursor:pointer;}
-  .dash-mtab.active{background:var(--ocean);border-color:var(--ocean);color:#fff;}
-  .dash-mtab.claude{border-color:#85B7EB;color:#185FA5;}
-  .dash-mtab.claude.active{background:#185FA5;}
-  .dash-map-info{display:flex;gap:14px;align-items:flex-start;margin-top:14px;background:var(--cream);border:1px solid var(--sand);border-radius:12px;padding:14px;}
-  .dash-map-info-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--sand);}
-  .dash-map-info-name{font-size:14px;font-weight:500;color:var(--deep);margin-bottom:2px;}
-  .dash-map-info-loc{font-size:11px;color:var(--muted);margin-bottom:6px;}
-  .dash-map-info-tags{display:flex;flex-wrap:wrap;gap:5px;}
-  .dash-map-tag{font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid var(--sand);color:var(--muted);}
-  .dash-map-tag.hi{background:#e1f5ee;color:#0F6E56;border-color:#5DCAA5;}
-  .dash-map-info-price{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--deep);}
-  .dash-map-info-hearts{font-size:13px;color:var(--blush);}
-</style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
-<script>
-const dashResorts=[
-  {id:0,name:"Sandals Ochi",fullName:"Sandals Ochi Resort",loc:"Ocho Rios, Jamaica",dest:"Jamaica",lon:-77.10,lat:18.40,price:4056,score:5,claude:false,suite:"Riviera Honeymoon Luxury",tags:["All-Inclusive","Couples-Only","Butler"],url:"https://www.sandals.com/ochi/",emoji:"\u{1F3D6}",romance:5,beach:4,food:4,activities:5,exclusivity:5,value:4},
-  {id:1,name:"Iberostar RH",fullName:"Iberostar Rose Hall Suites",loc:"Montego Bay, Jamaica",dest:"Jamaica",lon:-77.91,lat:18.49,price:3131,score:4,claude:false,suite:"Junior Suite Ocean Room",tags:["Adults-Only","Oceanfront","Spa"],url:"https://www.iberostar.com/en/hotels/montego-bay/iberostar-selection-rose-hall-suites",emoji:"\u{1F30A}",romance:4,beach:4,food:4,activities:3,exclusivity:3,value:5},
-  {id:2,name:"Couples Negril",fullName:"Couples Negril",loc:"Negril, Jamaica",dest:"Jamaica",lon:-78.35,lat:18.27,price:3304,score:5,claude:true,suite:"Beachfront Suite",tags:["Couples-Only","Free Scuba","7-Mile Beach"],url:"https://www.couples.com/resort/couples-negril",emoji:"\u{1F93F}",romance:5,beach:5,food:4,activities:5,exclusivity:5,value:5},
-  {id:3,name:"JOIA Aruba",fullName:"JOIA Aruba by Iberostar",loc:"Noord, Aruba",dest:"Aruba",lon:-70.05,lat:12.57,price:11752,score:5,claude:false,suite:"Master Butler Suite King",tags:["Butler Service","Eagle Beach","Adults-Only"],url:"https://www.iberostar.com/en/hotels/eagle-beach/joia-aruba-by-iberostar",emoji:"\u{1F334}",romance:5,beach:5,food:5,activities:3,exclusivity:5,value:2},
-  {id:4,name:"Secrets BB",fullName:"Secrets Baby Beach Aruba",loc:"San Nicolas, Aruba",dest:"Aruba",lon:-69.90,lat:12.43,price:9715,score:5,claude:false,suite:"Preferred Club Jr Suite Swim Out",tags:["Swim-Out Pool","Preferred Club","Adults-Only"],url:"https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/aruba/baby-beach-aruba",emoji:"\u{1F3CA}",romance:5,beach:4,food:4,activities:4,exclusivity:5,value:3},
-  {id:5,name:"Riu Palace",fullName:"Riu Palace Antillas",loc:"Palm Beach, Aruba",dest:"Aruba",lon:-70.08,lat:12.59,price:3990,score:4,claude:true,suite:"Junior Suite Ocean View",tags:["24h All-Inclusive","Adults-Only","Casino"],url:"https://www.riu.com/en/hotel/aruba/palmbeach/hotel-riu-palace-antillas",emoji:"\u{1F3B0}",romance:4,beach:4,food:4,activities:3,exclusivity:4,value:5},
-  {id:6,name:"Riu Guanacaste",fullName:"Riu Guanacaste",loc:"Guanacaste, Costa Rica",dest:"Costa Rica",lon:-85.65,lat:10.35,price:2342,score:3,claude:false,suite:"Deluxe Room Pool View",tags:["All-Inclusive","Beachfront","Best Price"],url:"https://www.riu.com/en/hotel/costa-rica/guanacaste/hotel-riu-guanacaste",emoji:"\u{1F33F}",romance:3,beach:3,food:3,activities:4,exclusivity:2,value:5},
-  {id:7,name:"Secrets Papagayo",fullName:"Secrets Papagayo",loc:"Papagayo, Costa Rica",dest:"Costa Rica",lon:-85.72,lat:10.58,price:6572,score:5,claude:false,suite:"Preferred Club Bungalow Ocean Front",tags:["Oceanfront Bungalow","Adults-Only","Plunge Pool"],url:"https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/costa-rica/papagayo-costa-rica",emoji:"\u{1F99C}",romance:5,beach:4,food:4,activities:5,exclusivity:5,value:4},
-  {id:8,name:"Nayara Springs",fullName:"Nayara Springs",loc:"Arenal Volcano, Costa Rica",dest:"Costa Rica",lon:-84.70,lat:10.47,price:6580,score:5,claude:true,suite:"Private Villa Hot Spring Pool",tags:["Hot Spring Pool","Rainforest Villas","Adults-Only"],url:"https://nayarasprings.com",emoji:"\u{1F30B}",romance:5,beach:2,food:5,activities:5,exclusivity:5,value:4}
-];
-const dColor={Jamaica:"#185FA5",Aruba:"#0F6E56","Costa Rica":"#D85A30"};
-const gc="rgba(0,0,0,0.07)",tc="rgba(0,0,0,0.45)";
-
-new Chart(document.getElementById("dc-bar"),{type:"bar",data:{labels:dashResorts.map(r=>r.fullName),datasets:[{data:dashResorts.map(r=>r.price),backgroundColor:dashResorts.map(r=>r.claude?"#1D9E75":"#378ADD"),borderRadius:4}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>" $"+c.raw.toLocaleString()}}},scales:{x:{ticks:{color:tc,callback:v=>"$"+(v/1000).toFixed(0)+"K"},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10}},grid:{display:false}}}}});
-
-new Chart(document.getElementById("dc-scatter"),{type:"bubble",data:{datasets:["Jamaica","Aruba","Costa Rica"].map(dest=>({label:dest,data:dashResorts.filter(r=>r.dest===dest).map(r=>({x:r.score,y:r.price,r:10})),backgroundColor:dColor[dest]+"AA",borderColor:dColor[dest]}))},options:{responsive:true,maintainAspectRatio:false,layout:{padding:20},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const r=dashResorts.filter(x=>x.dest===["Jamaica","Aruba","Costa Rica"][ctx.datasetIndex])[ctx.dataIndex];return r.fullName+": $"+r.price.toLocaleString();}}}},scales:{x:{min:2,max:6,title:{display:true,text:"Romance score",color:tc,font:{size:11}},ticks:{color:tc,stepSize:1},grid:{color:gc}},y:{min:0,max:13500,ticks:{color:tc,callback:v=>"$"+(v/1000).toFixed(0)+"K"},grid:{color:gc}}}}});
-
-new Chart(document.getElementById("dc-dest"),{type:"bar",data:{labels:["Jamaica","Aruba","Costa Rica"],datasets:[{data:["Jamaica","Aruba","Costa Rica"].map(d=>Math.round(dashResorts.filter(r=>r.dest===d).reduce((s,r)=>s+r.price,0)/dashResorts.filter(r=>r.dest===d).length)),backgroundColor:["#378ADD","#1D9E75","#D85A30"],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>" $"+c.raw.toLocaleString()}}},scales:{x:{ticks:{color:tc},grid:{display:false}},y:{ticks:{color:tc,callback:v=>"$"+(v/1000).toFixed(0)+"K"},grid:{color:gc}}}}});
-
-new Chart(document.getElementById("dc-score"),{type:"bar",data:{labels:["3 hearts","4 hearts","5 hearts"],datasets:[{data:[3,4,5].map(s=>dashResorts.filter(r=>r.score===s).length),backgroundColor:["#B5D4F4","#5DCAA5","#1D9E75"],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{display:false}},y:{ticks:{color:tc,stepSize:1},grid:{color:gc},min:0,max:8}}}});
-
-new Chart(document.getElementById("dc-budget"),{type:"bar",data:{labels:["Jamaica","Aruba","Costa Rica"],datasets:[{label:"Included",data:[3800,8500,4000],backgroundColor:"#378ADD",borderRadius:4},{label:"Typical extras",data:[800,1200,1500],backgroundColor:"#1D9E75",borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{color:tc},grid:{display:false}},y:{stacked:true,ticks:{color:tc,callback:v=>"$"+(v/1000).toFixed(0)+"K"},grid:{color:gc}}}}});
-
-let dashRadar;
-const radarTabs=document.getElementById("dc-radar-tabs");
-dashResorts.forEach((r,i)=>{const b=document.createElement("button");b.className="dash-rtab"+(r.claude?" claude":"")+(i===0?" active":"");b.textContent=r.name;b.onclick=()=>{document.querySelectorAll(".dash-rtab").forEach(x=>x.classList.remove("active"));b.classList.add("active");updateDashRadar(r);};radarTabs.appendChild(b);});
-function updateDashRadar(r){const data=[r.romance,r.beach,r.food,r.activities,r.exclusivity,r.value];const col=r.claude?"#7F77DD":dColor[r.dest];if(dashRadar){dashRadar.data.datasets[0].data=data;dashRadar.data.datasets[0].backgroundColor=col+"33";dashRadar.data.datasets[0].borderColor=col;dashRadar.update();}else{dashRadar=new Chart(document.getElementById("dc-radar"),{type:"radar",data:{labels:["Romance","Beach","Food","Activities","Exclusivity","Value"],datasets:[{data,backgroundColor:col+"33",borderColor:col,borderWidth:2,pointBackgroundColor:col}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:5,ticks:{stepSize:1,color:tc,backdropColor:"transparent"},grid:{color:gc},pointLabels:{color:tc,font:{size:11}}}}}});}}
-updateDashRadar(dashResorts[0]);
-
-
-</script>
-
-
-
-
-
-<div id="tab-map" class="tab-panel">
-<div style="max-width:1100px;margin:0 auto;padding:24px 24px 40px;">
-  <h2 class="section-title">Resort Map</h2>
-  <p class="section-sub">9 resorts &mdash; click a pin or row to explore</p>
-  <div id="lmap-filters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;"></div>
-  <div id="lmap" style="width:100%;height:480px;border-radius:14px;border:1.5px solid var(--sand);z-index:1;"></div>
-  <div style="display:grid;grid-template-columns:1fr 340px;border:1.5px solid var(--sand);border-top:none;border-radius:0 0 14px 14px;background:#fff;overflow:hidden;">
-    <div style="overflow:auto;max-height:300px;">
-      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+  <div class="panel">
+    <div class="tbl-wrap">
+      <table>
         <thead><tr>
-          <th style="background:var(--deep);color:#fff;padding:9px 14px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:500;position:sticky;top:0;">Resort</th>
-          <th style="background:var(--deep);color:#fff;padding:9px 14px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:500;position:sticky;top:0;">Location</th>
-          <th style="background:var(--deep);color:#fff;padding:9px 14px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:500;position:sticky;top:0;">Price</th>
-          <th style="background:var(--deep);color:#fff;padding:9px 14px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:500;position:sticky;top:0;">Score</th>
+          <th>Resort</th><th>Location</th><th>Price</th><th>Score</th>
         </tr></thead>
-        <tbody id="lmap-tbody"></tbody>
+        <tbody id="tbody"></tbody>
       </table>
     </div>
-    <div style="border-left:1.5px solid var(--sand);display:flex;flex-direction:column;">
-      <div id="lmap-empty" style="padding:36px 20px;text-align:center;color:var(--muted);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:300;">
-        <div style="font-size:32px;">📍</div>
+    <div class="detail">
+      <div class="detail-empty" id="empty">
+        <div class="icon">&#128205;</div>
         <div style="font-weight:500;color:var(--deep);">Select a resort</div>
-        <div>Click a pin on the map<br>or a row in the table</div>
+        <div>Click any pin on the map<br>or a row in the table</div>
       </div>
-      <div id="lmap-card" style="display:none;flex-direction:column;">
-        <div id="lmap-head" style="padding:14px 18px;border-bottom:1px solid var(--sand);"></div>
-        <div id="lmap-body" style="padding:10px 18px;flex:1;"></div>
-        <div id="lmap-foot" style="padding:10px 18px 14px;border-top:1px solid var(--sand);"></div>
+      <div class="card" id="card">
+        <div class="card-head" id="card-head"></div>
+        <div class="card-body" id="card-body"></div>
+        <div class="card-footer" id="card-footer"></div>
       </div>
     </div>
   </div>
 </div>
-</div><!-- end tab-map -->
 
-<!-- TIPS -->
-<div class="tips-section">
-  <h2 class="section-title">Honeymoon Planning Tips <span class="claude-badge" style="font-size:11px;padding:3px 10px;vertical-align:middle;">by Claude</span></h2>
-  <p class="section-sub">Make the most of your October getaway</p>
-  <div class="tips-grid">
-    <div class="tip-card">
-      <div class="tip-icon">🌅</div>
-      <div class="tip-title">October is Prime Season</div>
-      <div class="tip-body">Jamaica and Aruba sit outside the main hurricane belt. October brings warm temps, low crowds, and off-peak pricing — ideal timing.</div>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">💌</div>
-      <div class="tip-title">Tell Them It's Your Honeymoon</div>
-      <div class="tip-body">Always notify the resort at booking and again at check-in. Most properties offer complimentary room décor, rose petals, or a welcome amenity for honeymooners.</div>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">🛁</div>
-      <div class="tip-title">Upgrade Your Room Category</div>
-      <div class="tip-body">Even a one-tier room upgrade — to a suite with a plunge pool or butler service — dramatically elevates the honeymoon experience. Often worth the cost.</div>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">🍾</div>
-      <div class="tip-title">Pre-Book Romantic Experiences</div>
-      <div class="tip-body">Private dinners on the beach, sunset sailing, couples spa packages, and snorkeling tours sell out. Reserve these before you arrive, not after.</div>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">📋</div>
-      <div class="tip-title">Travel Insurance is a Must</div>
-      <div class="tip-body">With suites ranging up to $11K+, protect your investment. Look for Cancel for Any Reason (CFAR) policies — especially for October travel in the Caribbean.</div>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">✈️</div>
-      <div class="tip-title">Factor in Flight Costs</div>
-      <div class="tip-body">Pittsburgh (PIT) has direct options to Montego Bay and connecting routes to Aruba and Costa Rica. Book flights early — October is still competitive for Caribbean routes.</div>
-    </div>
-  </div>
-</div>
-
-<footer>
-  Honeymoon Suites Guide · October 19–26 · 7 Nights · All prices are starting rates and subject to change
-</footer>
-
-<script>
-  const cards = Array.from(document.querySelectorAll('.card[data-price]'));
-  const noResults = document.getElementById('noResults');
-  const resultCount = document.getElementById('resultCount');
-  let activeFilter = 'all';
-
-  function filterAndSort() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const sort = document.getElementById('sortSelect').value;
-
-    let visible = cards.filter(card => {
-      const loc = card.dataset.location;
-      const keywords = card.dataset.keywords;
-      const text = card.innerText.toLowerCase();
-
-      const matchesFilter = activeFilter === 'all' || loc.includes(activeFilter);
-      const matchesSearch = !query || text.includes(query) || keywords.includes(query);
-      return matchesFilter && matchesSearch;
-    });
-
-    // Sort
-    if (sort === 'price-asc') visible.sort((a,b) => +a.dataset.price - +b.dataset.price);
-    else if (sort === 'price-desc') visible.sort((a,b) => +b.dataset.price - +a.dataset.price);
-    else if (sort === 'honeymoon') visible.sort((a,b) => +b.dataset.score - +a.dataset.score);
-
-    const grid = document.getElementById('resortGrid');
-
-    cards.forEach(c => { c.style.display = 'none'; });
-    visible.forEach((c, i) => {
-      c.style.display = 'flex';
-      c.style.animationDelay = (i * 0.05) + 's';
-      grid.appendChild(c);
-    });
-
-    noResults.style.display = visible.length === 0 ? 'block' : 'none';
-    resultCount.textContent = visible.length;
-  }
-
-  document.getElementById('searchInput').addEventListener('input', filterAndSort);
-  document.getElementById('sortSelect').addEventListener('change', filterAndSort);
-
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      filterAndSort();
-    });
-  });
-</script>
-
-<script>
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  btn.classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (name === 'map') initCanvasMap();
-}
-</script>
-
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-var _lmapDone = false;
-function initCanvasMap() {
-  if (_lmapDone) return;
-  if (!window.L) { setTimeout(initCanvasMap, 100); return; }
-  _lmapDone = true;
+window.addEventListener("load", function() {
+var mJOBS = [
+  { id:"sandals-ochi", s:"jamaica", lat:18.404, lng:-77.102,
+    n:"Sandals Ochi Resort", r:"Riviera Honeymoon Luxury Suite",
+    loc:"Ocho Rios, Jamaica", d:"$4,056 for 7 nights", yr:2025, c:"#b8965a",
+    score:5, claude:false, url:"https://www.sandals.com/ochi/", emoji:"&#127958;",
+    b:["Couples-only all-inclusive on Jamaica's north coast",
+       "Butler service on upgrade - arrange private beach dinner",
+       "Complimentary honeymoon amenity package at check-in"] },
+  { id:"iberostar-rh", s:"jamaica", lat:18.490, lng:-77.912,
+    n:"Iberostar Rose Hall Suites", r:"Junior Suite Ocean Room",
+    loc:"Montego Bay, Jamaica", d:"$3,131 for 7 nights", yr:2025, c:"#b8965a",
+    score:4, claude:false, url:"https://www.iberostar.com/en/hotels/montego-bay/iberostar-selection-rose-hall-suites", emoji:"&#127754;",
+    b:["Request west-facing room for spectacular MoBay sunsets",
+       "Star Prestige section offers private pool lounge access",
+       "Best-value Jamaica option with gourmet dining included"] },
+  { id:"couples-negril", s:"jamaica", lat:18.268, lng:-78.352,
+    n:"Couples Negril", r:"Beachfront Suite",
+    loc:"Negril, Jamaica", d:"$3,304 for 7 nights", yr:2025, c:"#7c3aed",
+    score:5, claude:true, url:"https://www.couples.com/resort/couples-negril", emoji:"&#129343;",
+    b:["Free scuba diving and sunset catamaran cruise included",
+       "7-Mile Beach - one of the Caribbean's finest",
+       "Complimentary honeymoon package with 6+ night stay"] },
+  { id:"joia-aruba", s:"aruba", lat:12.577, lng:-70.052,
+    n:"JOIA Aruba by Iberostar", r:"Master Butler Suite King",
+    loc:"Noord, Aruba", d:"$11,752 for 7 nights", yr:2025, c:"#3a6b7a",
+    score:5, claude:false, url:"https://www.iberostar.com/en/hotels/eagle-beach/joia-aruba-by-iberostar", emoji:"&#127796;",
+    b:["Private butler arranges candlelit dinners and cabanas",
+       "Eagle Beach - consistently rated the world's best beach",
+       "October: perfect weather 88F, only ~3 rain days"] },
+  { id:"secrets-bb", s:"aruba", lat:12.432, lng:-69.898,
+    n:"Secrets Baby Beach Aruba", r:"Preferred Club Jr Suite Swim Out",
+    loc:"San Nicolas, Aruba", d:"$9,715 for 7 nights", yr:2025, c:"#3a6b7a",
+    score:5, claude:false, url:"https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/aruba/baby-beach-aruba", emoji:"&#127946;",
+    b:["Swim directly from your terrace into the private pool",
+       "Preferred Club: a la carte dining and premium in-room spirits",
+       "Newer property with modern adults-only design"] },
+  { id:"riu-palace", s:"aruba", lat:12.591, lng:-70.082,
+    n:"Riu Palace Antillas", r:"Junior Suite Ocean View - Adults Only",
+    loc:"Palm Beach, Aruba", d:"$3,990 for 7 nights", yr:2025, c:"#7c3aed",
+    score:4, claude:true, url:"https://www.riu.com/en/hotel/aruba/palmbeach/hotel-riu-palace-antillas", emoji:"&#127920;",
+    b:["Adults-only on same Palm Beach strip as JOIA at a third the price",
+       "24h all-inclusive with 5 restaurants and casino",
+       "Exchange privileges with adjacent Riu Palace Aruba"] },
+  { id:"riu-guanacaste", s:"costa-rica", lat:10.353, lng:-85.652,
+    n:"Riu Guanacaste", r:"Deluxe Room Pool View",
+    loc:"Guanacaste, Costa Rica", d:"$2,342 for 7 nights", yr:2025, c:"#2d6a4f",
+    score:3, claude:false, url:"https://www.riu.com/en/hotel/costa-rica/guanacaste/hotel-riu-guanacaste", emoji:"&#127807;",
+    b:["Most affordable option - use savings for zip-lining and horseback on the beach",
+       "Guanacaste is dry season in October - ideal conditions",
+       "Ask concierge for in-room honeymoon decoration on arrival"] },
+  { id:"secrets-papagayo", s:"costa-rica", lat:10.582, lng:-85.718,
+    n:"Secrets Papagayo Costa Rica", r:"Preferred Club Bungalow Suite, Ocean Front",
+    loc:"Papagayo, Costa Rica", d:"$6,572 for 7 nights", yr:2025, c:"#2d6a4f",
+    score:5, claude:false, url:"https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/costa-rica/papagayo-costa-rica", emoji:"&#129436;",
+    b:["Bungalow-style suites feel secluded from the main resort",
+       "World-class snorkeling and sailing from Papagayo Peninsula",
+       "Book outdoor activities for mornings - clearest skies"] },
+  { id:"nayara-springs", s:"costa-rica", lat:10.467, lng:-84.702,
+    n:"Nayara Springs", r:"Private Villa - Natural Hot Spring Plunge Pool",
+    loc:"Arenal Volcano, Costa Rica", d:"$6,580 for 7 nights", yr:2025, c:"#7c3aed",
+    score:5, claude:true, url:"https://nayarasprings.com", emoji:"&#127755;",
+    b:["Every villa has a private thermal hot spring plunge pool",
+       "Rated the most romantic resort in Costa Rica",
+       "Sloths, volcano views, and rainforest sounds every night"] }
+];
 
-  var JOBS = [
-    {id:"sandals-ochi",s:"jamaica",lat:18.404,lng:-77.102,n:"Sandals Ochi Resort",r:"Riviera Honeymoon Luxury Suite",loc:"Ocho Rios, Jamaica",d:"$4,056",c:"#b8965a",score:5,claude:false,url:"https://www.sandals.com/ochi/",emoji:"🏖",b:["Couples-only all-inclusive on Jamaica's north coast","Butler service on upgrade - arrange private beach dinner","Complimentary honeymoon amenity package at check-in"]},
-    {id:"iberostar-rh",s:"jamaica",lat:18.490,lng:-77.912,n:"Iberostar Rose Hall Suites",r:"Junior Suite Ocean Room",loc:"Montego Bay, Jamaica",d:"$3,131",c:"#b8965a",score:4,claude:false,url:"https://www.iberostar.com/en/hotels/montego-bay/iberostar-selection-rose-hall-suites",emoji:"🌊",b:["Request west-facing room for spectacular MoBay sunsets","Star Prestige section offers private pool lounge access","Best-value Jamaica option with gourmet dining included"]},
-    {id:"couples-negril",s:"jamaica",lat:18.268,lng:-78.352,n:"Couples Negril",r:"Beachfront Suite",loc:"Negril, Jamaica",d:"$3,304",c:"#7c3aed",score:5,claude:true,url:"https://www.couples.com/resort/couples-negril",emoji:"🤿",b:["Free scuba diving and sunset catamaran cruise included","7-Mile Beach - one of the Caribbean's finest","Complimentary honeymoon package with 6+ night stay"]},
-    {id:"joia-aruba",s:"aruba",lat:12.577,lng:-70.052,n:"JOIA Aruba by Iberostar",r:"Master Butler Suite King",loc:"Noord, Aruba",d:"$11,752",c:"#3a6b7a",score:5,claude:false,url:"https://www.iberostar.com/en/hotels/eagle-beach/joia-aruba-by-iberostar",emoji:"🌴",b:["Private butler arranges candlelit dinners and cabanas","Eagle Beach - consistently rated the world's best beach","October: perfect weather 88F, only ~3 rain days"]},
-    {id:"secrets-bb",s:"aruba",lat:12.432,lng:-69.898,n:"Secrets Baby Beach Aruba",r:"Preferred Club Jr Suite Swim Out",loc:"San Nicolas, Aruba",d:"$9,715",c:"#3a6b7a",score:5,claude:false,url:"https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/aruba/baby-beach-aruba",emoji:"🏊",b:["Swim directly from your terrace into the private pool","Preferred Club: a la carte dining and premium in-room spirits","Newer property with modern adults-only design"]},
-    {id:"riu-palace",s:"aruba",lat:12.591,lng:-70.082,n:"Riu Palace Antillas",r:"Junior Suite Ocean View - Adults Only",loc:"Palm Beach, Aruba",d:"$3,990",c:"#7c3aed",score:4,claude:true,url:"https://www.riu.com/en/hotel/aruba/palmbeach/hotel-riu-palace-antillas",emoji:"🎰",b:["Adults-only on same Palm Beach strip as JOIA at a third the price","24h all-inclusive with 5 restaurants and casino","Exchange privileges with adjacent Riu Palace Aruba"]},
-    {id:"riu-guanacaste",s:"costa-rica",lat:10.353,lng:-85.652,n:"Riu Guanacaste",r:"Deluxe Room Pool View",loc:"Guanacaste, Costa Rica",d:"$2,342",c:"#2d6a4f",score:3,claude:false,url:"https://www.riu.com/en/hotel/costa-rica/guanacaste/hotel-riu-guanacaste",emoji:"🌿",b:["Most affordable option - use savings for zip-lining and horseback on the beach","Guanacaste is dry season in October - ideal conditions","Ask concierge for in-room honeymoon decoration on arrival"]},
-    {id:"secrets-papagayo",s:"costa-rica",lat:10.582,lng:-85.718,n:"Secrets Papagayo Costa Rica",r:"Preferred Club Bungalow Suite, Ocean Front",loc:"Papagayo, Costa Rica",d:"$6,572",c:"#2d6a4f",score:5,claude:false,url:"https://www.hyattinclusivecollection.com/en/resorts-hotels/secrets/costa-rica/papagayo-costa-rica",emoji:"🦜",b:["Bungalow-style suites feel secluded from the main resort","World-class snorkeling and sailing from Papagayo Peninsula","Book outdoor activities for mornings - clearest skies"]},
-    {id:"nayara-springs",s:"costa-rica",lat:10.467,lng:-84.702,n:"Nayara Springs",r:"Private Villa - Natural Hot Spring Plunge Pool",loc:"Arenal Volcano, Costa Rica",d:"$6,580",c:"#7c3aed",score:5,claude:true,url:"https://nayarasprings.com",emoji:"🌋",b:["Every villa has a private thermal hot spring plunge pool","Rated the most romantic resort in Costa Rica","Sloths, volcano views, and rainforest sounds every night"]}
-  ];
+var destBg = { jamaica:"#fdf6ec", aruba:"#eaf4f4", "costa-rica":"#eaf4ee" };
+var activeFilter = "all";
+var selectedId = null;
+var markers = {};
 
-  var destBg = {jamaica:"#fdf6ec",aruba:"#eaf4f4","costa-rica":"#eaf4ee"};
-  var lmFilter = "all", lmSelected = null, lmMarkers = {};
-  var fDefs = [
-    {f:"all",label:"All Resorts",bg:"#2c1f14"},
-    {f:"jamaica",label:"Jamaica",bg:"#b8965a"},
-    {f:"aruba",label:"Aruba",bg:"#3a6b7a"},
-    {f:"costa-rica",label:"Costa Rica",bg:"#2d6a4f"},
-    {f:"claude",label:"Claude Picks",bg:"#7c3aed"}
-  ];
+var map = L.map("map", { zoomControl:true, scrollWheelZoom:true })
+            .setView([13.5, -76], 5);
 
-  var fw = document.getElementById("lmap-filters");
-  fDefs.forEach(function(def) {
-    var b = document.createElement("button");
-    b.textContent = def.label; b.dataset.f = def.f;
-    b.style.cssText = "padding:6px 16px;border-radius:100px;border:1.5px solid #e8ddd0;background:"+(def.f==="all"?def.bg:"#fff")+";color:"+(def.f==="all"?"#fff":"#7a6a5a")+";font-family:'Jost',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;margin-bottom:4px;";
-    b.addEventListener("click", function() {
-      lmFilter = def.f;
-      fw.querySelectorAll("button").forEach(function(x){ x.style.background="#fff"; x.style.color="#7a6a5a"; x.style.borderColor="#e8ddd0"; });
-      b.style.background = def.bg; b.style.color = "#fff"; b.style.borderColor = "transparent";
-      JOBS.forEach(function(job) {
-        var show = lmFilter==="all"||(lmFilter==="claude"&&job.claude)||job.s===lmFilter;
-        if (show) { lmMarkers[job.id].addTo(lmap); } else { lmMarkers[job.id].remove(); }
-      });
-      lmBuildTable();
-      if (def.f !== "all") {
-        var vis = JOBS.filter(function(j){ return def.f==="claude"?j.claude:j.s===def.f; });
-        if (vis.length) lmap.flyToBounds(L.latLngBounds(vis.map(function(j){return [j.lat,j.lng];})), {padding:[60,60],duration:1});
-      } else { lmap.flyTo([13.5,-76], 5, {duration:1}); }
-    });
-    fw.appendChild(b);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:"&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
+  maxZoom:18
+}).addTo(map);
+
+function makeIcon(job) {
+  var col = job.claude ? "#7c3aed" : job.c;
+  var pulse = job.score === 5 ? " pulse" : "";
+  return L.divIcon({
+    className:"",
+    html:'<div class="custom-pin' + pulse + '" style="background:' + col + ';" title="' + job.n + '"></div>',
+    iconSize:[28,28],
+    iconAnchor:[14,14],
+    popupAnchor:[0,-18]
   });
-
-  var lmap = L.map("lmap", {zoomControl:true,scrollWheelZoom:true}).setView([13.5,-76], 5);
-  window._lmap = lmap;
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:"&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>", maxZoom:18
-  }).addTo(lmap);
-
-  function makePin(job) {
-    var col = job.claude ? "#7c3aed" : job.c;
-    var pulse = job.score===5 ? "animation:lm-pulse 2s ease-in-out infinite;" : "";
-    return L.divIcon({
-      className:"",
-      html:'<div style="width:28px;height:28px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);background:'+col+';cursor:pointer;'+pulse+'"></div>',
-      iconSize:[28,28], iconAnchor:[14,14], popupAnchor:[0,-18]
-    });
-  }
-
-  JOBS.forEach(function(job) {
-    var mk = L.marker([job.lat,job.lng], {icon:makePin(job)}).addTo(lmap);
-    mk.bindPopup(
-      '<div style="font-family:Jost,sans-serif;padding:2px 4px;">'+
-      '<div style="font-weight:500;font-size:13px;color:#2c1f14;">'+job.n+(job.claude?" ✦":"")+'</div>'+
-      '<div style="font-size:11px;color:#7a6a5a;">'+job.loc+'</div>'+
-      '<div style="font-family:Cormorant Garamond,serif;font-size:16px;color:#3a6b7a;margin-top:4px;">'+job.d+'</div>'+
-      '</div>', {maxWidth:220}
-    );
-    mk.on("click", function(){ lmSelect(job.id); });
-    lmMarkers[job.id] = mk;
-  });
-
-  setTimeout(function(){ lmap.invalidateSize(); }, 200);
-
-  function lmSelect(id) {
-    lmSelected = id;
-    var job = JOBS.find(function(j){ return j.id===id; });
-    if (!job) return;
-    lmap.flyTo([job.lat,job.lng], 10, {duration:1.2});
-    lmMarkers[id].openPopup();
-    document.querySelectorAll("#lmap-tbody tr").forEach(function(tr){ tr.style.background = tr.dataset.id===id ? "#f0f4f7" : ""; });
-    var col = job.claude?"#7c3aed":job.c, bg = job.claude?"#f0eefb":destBg[job.s];
-    var hearts = "♥".repeat(job.score)+"♡".repeat(5-job.score);
-    var badge = job.claude?"<span style='display:inline-block;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:100px;background:#ede8fb;color:#5b21b6;margin-top:4px;'>✦ Claude Pick</span>":"";
-    document.getElementById("lmap-empty").style.display="none";
-    var card=document.getElementById("lmap-card"); card.style.display="flex"; card.style.flexDirection="column";
-    var head=document.getElementById("lmap-head"); head.style.background=bg; head.style.borderBottom="1px solid #e8ddd0";
-    head.innerHTML="<div style='display:flex;align-items:center;gap:12px;'><div style='width:44px;height:44px;border-radius:50%;background:"+col+"22;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;'>"+job.emoji+"</div><div><div style='font-family:Cormorant Garamond,serif;font-size:16px;color:#2c1f14;line-height:1.2;'>"+job.n+"</div><div style='font-size:11px;color:#7a6a5a;margin-top:2px;'>📍 "+job.loc+"</div>"+badge+"</div></div>";
-    document.getElementById("lmap-body").innerHTML=
-      "<div style='display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid #e8ddd0;'><span style='font-weight:500;color:#2c1f14;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;'>Suite</span><span style='text-align:right;color:#3d2e22;font-size:11px;max-width:160px;'>"+job.r+"</span></div>"+
-      "<div style='display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid #e8ddd0;'><span style='font-weight:500;color:#2c1f14;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;'>Price</span><span style='font-family:Cormorant Garamond,serif;font-size:20px;font-weight:600;color:#2c1f14;'>"+job.d+"</span></div>"+
-      "<div style='display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid #e8ddd0;'><span style='font-weight:500;color:#2c1f14;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;'>Dates</span><span style='color:#3d2e22;font-size:12px;'>Oct 19-26, 2025</span></div>"+
-      "<div style='display:flex;justify-content:space-between;font-size:12px;padding:6px 0;'><span style='font-weight:500;color:#2c1f14;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;'>Score</span><span style='color:#c9a98a;font-size:13px;letter-spacing:2px;'>"+hearts+"</span></div>"+
-      "<ul style='list-style:none;padding:8px 0 0;'>"+job.b.map(function(b){return "<li style='font-size:12px;color:#7a6a5a;padding:3px 0 3px 14px;position:relative;line-height:1.5;'><span style='position:absolute;left:0;color:#c9a98a;'>-</span>"+b+"</li>";}).join("")+"</ul>";
-    document.getElementById("lmap-foot").innerHTML="<a href='"+job.url+"' style='font-size:12px;color:#3a6b7a;text-decoration:none;font-weight:500;' target='_blank'>Visit website ↗</a>";
-    lmBuildTable();
-  }
-
-  function lmBuildTable() {
-    var tb = document.getElementById("lmap-tbody"); tb.innerHTML="";
-    JOBS.forEach(function(job) {
-      var show = lmFilter==="all"||(lmFilter==="claude"&&job.claude)||job.s===lmFilter;
-      if (!show) return;
-      var col = job.claude?"#7c3aed":job.c;
-      var tr = document.createElement("tr");
-      tr.dataset.id = job.id; tr.style.cursor="pointer";
-      if (job.id===lmSelected) tr.style.background="#f0f4f7";
-      tr.innerHTML="<td style='padding:9px 14px;border-bottom:1px solid #e8ddd0;vertical-align:middle;'><span style='width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle;background:"+col+";'></span><span style='font-weight:500;color:#2c1f14;'>"+job.n+(job.claude?" ✦":"")+"</span></td><td style='padding:9px 14px;border-bottom:1px solid #e8ddd0;color:#7a6a5a;font-size:11px;'>"+job.loc+"</td><td style='padding:9px 14px;border-bottom:1px solid #e8ddd0;font-family:Cormorant Garamond,serif;font-size:15px;color:#3a6b7a;'>"+job.d+"</td><td style='padding:9px 14px;border-bottom:1px solid #e8ddd0;color:#c9a98a;font-size:11px;'>"+"♥".repeat(job.score)+"♡".repeat(5-job.score)+"</td>";
-      tr.addEventListener("mouseover",function(){if(job.id!==lmSelected)this.style.background="#faf6f0";});
-      tr.addEventListener("mouseout",function(){if(job.id!==lmSelected)this.style.background="";});
-      tr.addEventListener("click",function(){lmSelect(job.id);});
-      tb.appendChild(tr);
-    });
-  }
-
-  lmBuildTable();
 }
-</script>
-<style>
-@keyframes lm-pulse{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,0.3),0 0 0 0 rgba(184,150,90,0.5)}50%{box-shadow:0 2px 8px rgba(0,0,0,0.3),0 0 0 10px rgba(184,150,90,0)}}
-</style>
 
+mJOBS.forEach(function(job) {
+  var marker = L.marker([job.lat, job.lng], { icon: makeIcon(job) }).addTo(map);
+  marker.bindPopup(
+    '<div class="popup-inner">' +
+    '<div class="popup-name">' + job.n + (job.claude ? " &#10022;" : "") + '</div>' +
+    '<div class="popup-loc">' + job.loc + '</div>' +
+    '<div class="popup-price">' + job.d.split(" for ")[0] + '</div>' +
+    '</div>', { maxWidth:220 }
+  );
+  marker.on("click", function() { selectResort(job.id); });
+  markers[job.id] = marker;
+});
+
+function selectResort(id) {
+  selectedId = id;
+  var job = mJOBS.find(function(j){ return j.id === id; });
+  if (!job) return;
+
+  // Fly map to pin
+  map.flyTo([job.lat, job.lng], 10, { duration:1.2 });
+  markers[id].openPopup();
+
+  // Highlight table row
+  document.querySelectorAll("tbody tr").forEach(function(tr){
+    tr.classList.toggle("selected", tr.dataset.id === id);
+  });
+
+  // Build card
+  var col = job.claude ? "#7c3aed" : job.c;
+  var bg  = job.claude ? "#f0eefb" : destBg[job.s];
+  var hearts = "&#9829;".repeat(job.score) + "&#9825;".repeat(5 - job.score);
+  var badge  = job.claude ? '<div class="badge">&#10022; Claude Pick</div>' : "";
+
+  document.getElementById("empty").style.display = "none";
+  var card = document.getElementById("card");
+  card.classList.add("show");
+
+  document.getElementById("card-head").style.background = bg;
+  document.getElementById("card-head").style.borderBottom = "1px solid var(--sand)";
+  document.getElementById("card-head").innerHTML =
+    '<div class="card-icon-row">' +
+      '<div class="card-emoji" style="background:' + col + '22;">' + job.emoji + '</div>' +
+      '<div>' +
+        '<div class="card-title">' + job.n + '</div>' +
+        '<div class="card-loc">&#128205; ' + job.loc + '</div>' +
+        badge +
+      '</div>' +
+    '</div>';
+
+  document.getElementById("card-body").innerHTML =
+    '<div class="card-row"><span class="lbl">Suite</span><span class="val" style="max-width:170px;text-align:right;">' + job.r + '</span></div>' +
+    '<div class="card-row"><span class="lbl">Price</span><span class="card-price">' + job.d.split(" for ")[0] + '</span></div>' +
+    '<div class="card-row"><span class="lbl">Dates</span><span class="val">Oct 19&ndash;26, 2025</span></div>' +
+    '<div class="card-row"><span class="lbl">Score</span><span class="card-hearts">' + hearts + '</span></div>' +
+    '<ul class="bullets">' + job.b.map(function(b){ return '<li>' + b + '</li>'; }).join("") + '</ul>';
+
+  document.getElementById("card-footer").innerHTML =
+    '<a href="' + job.url + '" class="card-link" target="_blank">Visit website &#8599;</a>';
+}
+
+function buildTable() {
+  var tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+  mJOBS.forEach(function(job) {
+    var show = activeFilter === "all"
+      || (activeFilter === "claude" && job.claude)
+      || job.s === activeFilter;
+    if (!show) return;
+    var col = job.claude ? "#7c3aed" : job.c;
+    var tr = document.createElement("tr");
+    tr.dataset.id = job.id;
+    if (job.id === selectedId) tr.classList.add("selected");
+    tr.innerHTML =
+      '<td><span class="td-dot" style="background:' + col + '"></span>' +
+        '<span class="td-name">' + job.n + (job.claude ? " &#10022;" : "") + '</span></td>' +
+      '<td style="color:var(--muted);font-size:11px;">' + job.loc + '</td>' +
+      '<td class="td-price">' + job.d.split(" for ")[0] + '</td>' +
+      '<td class="td-hearts">' + "&#9829;".repeat(job.score) + "&#9825;".repeat(5 - job.score) + '</td>';
+    tr.addEventListener("click", function() { selectResort(job.id); });
+    tbody.appendChild(tr);
+  });
+}
+
+function applyFilter(f) {
+  activeFilter = f;
+  document.querySelectorAll(".filter-btn").forEach(function(b){
+    b.classList.toggle("active", b.dataset.f === f);
+  });
+  mJOBS.forEach(function(job) {
+    var show = f === "all" || (f === "claude" && job.claude) || job.s === f;
+    var m = markers[job.id];
+    if (show) { m.addTo(map); } else { m.remove(); }
+  });
+  buildTable();
+  if (f !== "all") {
+    var visible = mJOBS.filter(function(j){
+      return f === "claude" ? j.claude : j.s === f;
+    });
+    if (visible.length) {
+      var bounds = L.latLngBounds(visible.map(function(j){ return [j.lat, j.lng]; }));
+      map.flyToBounds(bounds, { padding:[60,60], duration:1 });
+    }
+  } else {
+    map.flyTo([13.5, -76], 5, { duration:1 });
+  }
+}
+
+document.querySelectorAll(".filter-btn").forEach(function(b){
+  b.addEventListener("click", function(){ applyFilter(b.dataset.f); });
+});
+
+buildTable();
+}); // end window.onload
+</script>
 </body>
 </html>
